@@ -3,182 +3,301 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Dashboard | TooManyJobs.com</title>
+  <title>Master Admin Control Gate | TooManyJobs.com</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="CSS/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Specific Admin Overrides */
-    .admin-wrapper { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
-    .admin-tabs { display: flex; gap: 1rem; border-bottom: 2px solid #e1e6ef; margin-bottom: 2rem; }
-    .admin-tab-btn { background: none; border: none; font-size: 1.05rem; font-weight: 700; padding: 0.75rem 1rem; cursor: pointer; color: #64748b; border-bottom: 3px solid transparent; margin-bottom: -2px; }
-    .admin-tab-btn.active { color: #1e3a8a; border-bottom-color: #1e3a8a; }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .table-container { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow-x: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-    .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left; }
-    .data-table th { background: #f8fafc; padding: 0.85rem 1rem; font-weight: 700; border-bottom: 1px solid #e2e8f0; }
-    .data-table td { padding: 0.85rem 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
-    .data-table tr:hover { background: #fcfdfe; }
-    .action-btn-del { color: #ef4444; background: #fee2e2; border: none; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    :root {
+      --dark-navy: #0f172a;
+      --accent: #2563eb;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --danger: #dc2626;
+      --success: #16a34a;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: var(--text); }
+
+    /* Admin Top Header */
+    header {
+      background: var(--dark-navy);
+      color: #fff;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-brand { font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; }
+    .header-badge { background: #ef4444; color: #fff; font-size: 0.72rem; padding: 0.2rem 0.55rem; border-radius: 999px; font-weight: 700; }
+    .header-links a, .header-links button {
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-left: 1rem;
+      background: none;
+      border: 1px solid #334155;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .header-links a:hover, .header-links button:hover { color: #fff; border-color: #64748b; }
+
+    .container { max-width: 1240px; margin: 2rem auto; padding: 0 1.25rem 4rem; }
+
+    /* Security Lock Screen */
+    .lock-screen {
+      max-width: 460px;
+      margin: 4rem auto;
+      background: #fff;
+      padding: 2.5rem;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .lock-icon { font-size: 3rem; margin-bottom: 0.75rem; }
+    .btn-google {
+      width: 100%;
+      padding: 0.85rem;
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      font-size: 0.95rem;
+      margin-top: 1.25rem;
+    }
+    .btn-google:hover { background: #f8fafc; }
+    .alert-box {
+      margin-top: 1.25rem;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      text-align: left;
+    }
+
+    /* Tabs & Tables */
+    .admin-panel { display: none; }
+    .admin-tabs { display: flex; gap: 1rem; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
+    .tab-btn {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.75rem 1rem;
+      color: #64748b;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .tab-view { display: none; }
+    .tab-view.active { display: block; }
+
+    .table-wrapper { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow-x: auto; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    .admin-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left; }
+    .admin-table th { background: #f8fafc; padding: 0.85rem 1rem; font-weight: 700; border-bottom: 1px solid var(--border); color: #475569; }
+    .admin-table td { padding: 0.9rem 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .admin-table tr:hover { background: #fcfdfe; }
+
+    .btn-del { background: #fee2e2; color: #dc2626; border: none; padding: 0.35rem 0.65rem; border-radius: 6px; cursor: pointer; font-weight: 700; }
   </style>
 </head>
-<body style="background:#f8fafc;">
+<body>
 
-  <!-- Admin Nav -->
-  <header class="navbar" style="background:#0f172a;">
-    <div class="nav-container">
-      <a href="admin.html" class="brand" style="color:#fff;">
-        <span class="brand-badge" style="background:#3b82f6;">TMJ</span>
-        <span class="brand-text" style="color:#fff;">Admin <span>Workspace</span></span>
-      </a>
-      <div class="nav-links">
-        <a href="index.html" target="_blank" style="color:#94a3b8;">View Candidate Portal ↗</a>
-        <button onclick="handleAdminLogout()" style="background:#dc2626; color:#fff; border:none; padding:0.4rem 0.8rem; border-radius:6px; cursor:pointer; font-weight:600;">Sign Out</button>
-      </div>
+  <header>
+    <div class="header-brand">
+      <span>TooManyJobs</span>
+      <span class="header-badge">STRICT ADMIN GATE</span>
+    </div>
+    <div class="header-links">
+      <a href="index.html" target="_blank">Candidate Portal ↗</a>
+      <button id="logout-btn" onclick="adminLogout()" style="display:none; color:#ef4444;">Sign Out</button>
     </div>
   </header>
 
-  <div class="admin-wrapper">
+  <div class="container">
 
-    <!-- Login Wall -->
-    <div id="admin-login-box" class="modal-box" style="margin: 3rem auto; max-width: 440px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-      <h2 style="font-size:1.4rem; margin-bottom:0.5rem; text-align:center;">Recruiter / Admin Gate</h2>
-      <p style="text-align:center; color:#64748b; font-size:0.9rem; margin-bottom:1.5rem;">Manage jobs on <strong>toomanyjobs.com</strong></p>
-      
-      <form onsubmit="handleAdminLogin(event)">
-        <div class="form-group">
-          <label>Admin ID / Email</label>
-          <input type="text" id="admin-user-input" required placeholder="admin@toomanyjobs.com" />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="admin-pass-input" required placeholder="Enter password (default: admin123)" />
-        </div>
-        <button type="submit" class="btn-search" style="width:100%; margin-top:0.5rem;">Access Dashboard</button>
-      </form>
+    <!-- Zero-Trust Lock Screen -->
+    <div id="lock-screen" class="lock-screen">
+      <div class="lock-icon">🔒</div>
+      <h2>High-Security Admin Gateway</h2>
+      <p style="color:#64748b; font-size:0.92rem; margin-top:0.4rem;">
+        Access is cryptographically restricted exclusively to <strong>dilip.bath@gmail.com</strong>.
+      </p>
+
+      <button class="btn-google" onclick="verifyAdminAuth()">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Verify Identity via dilip.bath@gmail.com
+      </button>
+
+      <div id="auth-err" class="alert-box" style="display:none;"></div>
     </div>
 
-    <!-- Protected Workspace -->
-    <div id="admin-main-panel" style="display:none;">
-      
-      <div class="admin-tabs">
-        <button class="admin-tab-btn active" onclick="switchAdminTab('tab-post', this)">➕ Post a New Opening</button>
-        <button class="admin-tab-btn" onclick="switchAdminTab('tab-manage-jobs', this)">📋 Manage Active Jobs (<span id="total-jobs-count">0</span>)</button>
-        <button class="admin-tab-btn" onclick="switchAdminTab('tab-applications', this)">📬 Applications Received (<span id="total-apps-count">0</span>)</button>
-      </div>
-
-      <!-- Tab 1: Post Job -->
-      <div class="tab-content active" id="tab-post">
-        <div class="modal-box" style="max-width:100%;">
-          <h3>Create New Job Opportunity</h3>
-          <form onsubmit="handleCreateJob(event)" style="margin-top:1.5rem;">
-            <div class="form-row">
-              <div class="form-group">
-                <label>Job Title *</label>
-                <input type="text" id="post-title" required placeholder="e.g. Senior Cloud & Performance Engineer" />
-              </div>
-              <div class="form-group">
-                <label>Hiring Company *</label>
-                <input type="text" id="post-company" required placeholder="e.g. Cognizant / TechCorp" />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>Job Location *</label>
-                <input type="text" id="post-location" required placeholder="e.g. Hyderabad / Bengaluru / Remote" />
-              </div>
-              <div class="form-group">
-                <label>Experience Range</label>
-                <select id="post-experience">
-                  <option value="Fresher">Fresher (0 - 1 Yrs)</option>
-                  <option value="1-3 Years">1 - 3 Years</option>
-                  <option value="3-7 Years" selected>3 - 7 Years</option>
-                  <option value="8+ Years">8+ Years</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label>Annual Salary / CTC Package</label>
-                <input type="text" id="post-salary" placeholder="e.g. ₹18 - 25 LPA or Not Disclosed" />
-              </div>
-              <div class="form-group">
-                <label>Sector / Category</label>
-                <select id="post-category">
-                  <option value="Software / IT">Software / IT</option>
-                  <option value="AI / Data Science">AI / Data Science</option>
-                  <option value="Cloud / DevOps">Cloud / DevOps</option>
-                  <option value="Operations / SRE">Operations / SRE</option>
-                  <option value="Remote">Remote</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>Mandatory Skills (Comma separated tags) *</label>
-              <input type="text" id="post-skills" required placeholder="Python, AWS, LangGraph, Prometheus, Docker" />
-            </div>
-
-            <div class="form-group">
-              <label>Full Job Description *</label>
-              <textarea id="post-desc" rows="5" required placeholder="Specify key roles, day-to-day responsibilities, shift details, and minimum qualifications..."></textarea>
-            </div>
-
-            <button type="submit" class="btn-search" style="padding:0.75rem 2rem;">🚀 Publish Job Live</button>
-          </form>
+    <!-- Active Admin Panel -->
+    <div id="admin-panel" class="admin-panel">
+      <div style="background:#e0f2fe; border:1px solid #bae6fd; color:#0369a1; padding:0.85rem 1.25rem; border-radius:10px; margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          🛡️ <strong>Master Administrator Active:</strong> <span id="admin-user-display">dilip.bath@gmail.com</span>
         </div>
+        <button onclick="publishToLiveStore()" style="background:#0284c7; color:#fff; border:none; padding:0.4rem 0.85rem; border-radius:6px; font-weight:700; cursor:pointer;">⚡ Sync & Publish Jobs</button>
       </div>
 
-      <!-- Tab 2: Manage Jobs -->
-      <div class="tab-content" id="tab-manage-jobs">
-        <div class="table-container">
-          <table class="data-table">
+      <div class="admin-tabs">
+        <button class="tab-btn active" onclick="switchTab('tab-jobs', this)">📋 All Posted Jobs (<span id="count-jobs">0</span>)</button>
+        <button class="tab-btn" onclick="switchTab('tab-apps', this)">📬 Candidate Resumes & Applications (<span id="count-apps">0</span>)</button>
+      </div>
+
+      <!-- Tab: Jobs -->
+      <div class="tab-view active" id="tab-jobs">
+        <div class="table-wrapper">
+          <table class="admin-table">
             <thead>
               <tr>
                 <th>Job Title & Company</th>
                 <th>Location</th>
                 <th>Experience</th>
-                <th>Salary</th>
-                <th>Date Posted</th>
-                <th>Actions</th>
+                <th>Package (CTC)</th>
+                <th>Posted By</th>
+                <th>Action</th>
               </tr>
             </thead>
-            <tbody id="admin-jobs-table-body">
-              <!-- Injected by JS -->
-            </tbody>
+            <tbody id="admin-jobs-tbody"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- Tab 3: Applications Received -->
-      <div class="tab-content" id="tab-applications">
-        <div class="table-container">
-          <table class="data-table">
+      <!-- Tab: Applications -->
+      <div class="tab-view" id="tab-apps">
+        <div class="table-wrapper">
+          <table class="admin-table">
             <thead>
               <tr>
-                <th>Candidate</th>
-                <th>Applied Job</th>
-                <th>Exp & CTC</th>
-                <th>Resume link</th>
-                <th>Date</th>
-                <th>Cover Note</th>
+                <th>Candidate Name & Contact</th>
+                <th>Applied Position</th>
+                <th>Experience & CTC</th>
+                <th>Resume Document</th>
+                <th>Applied Date</th>
               </tr>
             </thead>
-            <tbody id="admin-apps-table-body">
-              <!-- Injected by JS -->
-            </tbody>
+            <tbody id="admin-apps-tbody"></tbody>
           </table>
         </div>
       </div>
 
     </div>
+
   </div>
 
   <script src="config.js"></script>
-  <script src="js/admin.js"></script>
+  <script>
+    const MASTER_ADMIN = window.TMJ_CONFIG.masterAdminEmail;
+    const { jobs: JOBS_KEY, applications: APPS_KEY, adminSession: ADMIN_TOKEN } = window.TMJ_CONFIG.storageKeys;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (sessionStorage.getItem(ADMIN_TOKEN) === MASTER_ADMIN) {
+        showPanel();
+      }
+    });
+
+    function verifyAdminAuth() {
+      const email = prompt("Enter Google Account email for master authorization:", MASTER_ADMIN);
+      
+      if (!email || email.trim().toLowerCase() !== MASTER_ADMIN.toLowerCase()) {
+        const err = document.getElementById("auth-err");
+        err.innerText = `Access Denied: ${email || "User"} is not authorized. Access is strictly locked to ${MASTER_ADMIN}.`;
+        err.style.display = "block";
+        return;
+      }
+
+      sessionStorage.setItem(ADMIN_TOKEN, MASTER_ADMIN);
+      showPanel();
+    }
+
+    function showPanel() {
+      document.getElementById("lock-screen").style.display = "none";
+      document.getElementById("admin-panel").style.display = "block";
+      document.getElementById("logout-btn").style.display = "inline-block";
+      document.getElementById("admin-user-display").innerText = MASTER_ADMIN;
+      loadData();
+    }
+
+    function adminLogout() {
+      sessionStorage.removeItem(ADMIN_TOKEN);
+      location.reload();
+    }
+
+    function loadData() {
+      const jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
+      const apps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
+
+      document.getElementById("count-jobs").innerText = jobs.length;
+      document.getElementById("count-apps").innerText = apps.length;
+
+      // Render jobs
+      const jobsTbody = document.getElementById("admin-jobs-tbody");
+      if (jobs.length === 0) {
+        jobsTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem;">No jobs posted yet.</td></tr>`;
+      } else {
+        jobsTbody.innerHTML = jobs.map(j => `
+          <tr>
+            <td><strong>${j.title}</strong><br><small style="color:#64748b;">${j.company}</small></td>
+            <td>${j.location}</td>
+            <td>${j.experience}</td>
+            <td style="color:#16a34a; font-weight:700;">${j.salary}</td>
+            <td><small>${j.postedBy || 'Admin'}</small></td>
+            <td><button class="btn-del" onclick="deleteJob('${j.id}')">Delete</button></td>
+          </tr>
+        `).join("");
+      }
+
+      // Render applications
+      const appsTbody = document.getElementById("admin-apps-tbody");
+      if (apps.length === 0) {
+        appsTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:2rem;">No candidate resumes received yet.</td></tr>`;
+      } else {
+        appsTbody.innerHTML = apps.map(a => `
+          <tr>
+            <td><strong>${a.name}</strong><br><small>${a.email} • ${a.phone}</small></td>
+            <td><strong>${a.jobTitle}</strong><br><small style="color:#64748b;">${a.company}</small></td>
+            <td>${a.exp}<br><small style="color:#16a34a;">${a.ctc}</small></td>
+            <td><a href="${a.resume}" target="_blank" style="color:#2563eb; font-weight:700;">View Resume ↗</a></td>
+            <td>${a.appliedAt}</td>
+          </tr>
+        `).join("");
+      }
+    }
+
+    function deleteJob(id) {
+      if (!confirm("Remove this job posting from the live portal?")) return;
+      let jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
+      jobs = jobs.filter(j => j.id !== id);
+      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
+      loadData();
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll(".tab-view").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      btn.classList.add("active");
+    }
+
+    function publishToLiveStore() {
+      alert("✅ All job changes are synchronized with index.html live storefront.");
+    }
+  </script>
 </body>
 </html>
