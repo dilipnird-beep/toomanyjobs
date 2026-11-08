@@ -1,28 +1,31 @@
 /* ==========================================================================
-   TooManyJobs.com - Ultra-Lightweight Naukri Design Tokens
+   TooManyJobs.com - Naukri Inspired Design System
    ========================================================================== */
 
 :root {
-  --primary-naukri: #1e3a8a;       /* Deep Navy */
-  --primary-accent: #2563eb;       /* Royal Blue */
-  --pill-bg: #eff6ff;
+  --primary-naukri: #1e3a8a;
+  --primary-accent: #2563eb;
+  --primary-light: #eff6ff;
+  --secondary-orange: #f97316;
   --text-main: #0f172a;
   --text-muted: #64748b;
   --border-color: #e2e8f0;
   --card-bg: #ffffff;
   --success: #16a34a;
+  --danger: #dc2626;
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
   --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+  --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--font-family); background-color: #f8fafc; color: var(--text-main); line-height: 1.5; }
 
-/* Navigation */
+/* Top Navigation Bar */
 .navbar {
   background: #ffffff;
   border-bottom: 1px solid var(--border-color);
@@ -31,12 +34,14 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
   z-index: 100;
 }
 .nav-container {
-  max-width: 1200px;
+  max-width: 1240px;
   margin: 0 auto;
-  padding: 0.9rem 1.5rem;
+  padding: 0.85rem 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 .brand {
   display: flex;
@@ -44,27 +49,49 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
   gap: 0.6rem;
   text-decoration: none;
   font-weight: 800;
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   color: var(--primary-naukri);
 }
 .brand-badge {
   background: var(--primary-accent);
   color: #fff;
-  padding: 0.2rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
   font-size: 0.85rem;
 }
-.brand-text span { color: #f97316; }
-.nav-links { display: flex; align-items: center; gap: 1.25rem; }
-.nav-links a { text-decoration: none; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
-.nav-links a:hover { color: var(--primary-accent); }
-.nav-admin-link {
-  background: #f1f5f9;
-  padding: 0.45rem 0.9rem;
-  border-radius: var(--radius-md);
-  color: var(--primary-naukri) !important;
-  border: 1px solid var(--border-color);
+.brand-text span { color: var(--secondary-orange); }
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
+
+.btn-nav {
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+}
+.btn-candidate {
+  background: #fff;
+  border-color: var(--border-color);
+  color: var(--text-main);
+}
+.btn-candidate:hover { background: #f1f5f9; }
+.btn-employer {
+  background: var(--primary-naukri);
+  color: #fff;
+}
+.btn-employer:hover { background: var(--primary-accent); }
 
 /* Hero & Naukri Search Box */
 .hero-section {
@@ -72,7 +99,7 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
   padding: 3.5rem 1.5rem 2.5rem;
   text-align: center;
 }
-.hero-section h1 { font-size: 2.25rem; font-weight: 800; color: var(--primary-naukri); margin-bottom: 0.5rem; }
+.hero-section h1 { font-size: 2.3rem; font-weight: 800; color: var(--primary-naukri); margin-bottom: 0.5rem; }
 .hero-section p { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 2rem; }
 
 .search-box-card {
@@ -146,6 +173,22 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
   border-color: var(--primary-naukri);
 }
 
+/* User Status Banner */
+.user-status-strip {
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  color: #0369a1;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+}
+
 /* Job Cards Grid */
 .container { max-width: 1100px; margin: 1.5rem auto; padding: 0 1.5rem 5rem; }
 .results-header {
@@ -163,7 +206,7 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
-  padding: 1.35rem 1.6rem;
+  padding: 1.4rem 1.6rem;
   box-shadow: var(--shadow-sm);
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
@@ -181,21 +224,21 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
 .job-title { font-size: 1.2rem; font-weight: 700; color: var(--primary-naukri); }
 .company-name { font-weight: 600; font-size: 0.95rem; color: #475569; margin: 0.2rem 0 0.75rem; }
 
-/* Naukri 3-Pillar Meta row: Exp | Sal | Loc */
+/* Naukri 3-Pillar Meta row */
 .job-meta-row {
   display: flex;
   align-items: center;
   gap: 1.5rem;
   color: #475569;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   margin-bottom: 0.85rem;
   flex-wrap: wrap;
 }
 .meta-item { display: flex; align-items: center; gap: 0.35rem; }
 
-.job-snippet { color: #64748b; font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.45; }
+.job-snippet { color: #64748b; font-size: 0.92rem; margin-bottom: 1rem; line-height: 1.5; }
 
-/* Key Skill Pills */
+/* Skill Pills */
 .skill-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem; }
 .skill-badge {
   background: #f1f5f9;
@@ -212,7 +255,7 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
   align-items: center;
   border-top: 1px dashed var(--border-color);
   padding-top: 0.85rem;
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
 }
 .btn-apply {
@@ -227,7 +270,7 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
 }
 .btn-apply:hover { background: var(--primary-accent); }
 
-/* Modal Window */
+/* Modals */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -242,26 +285,27 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
 .modal-box {
   background: #fff;
   border-radius: var(--radius-lg);
-  max-width: 560px;
+  max-width: 580px;
   width: 100%;
-  padding: 1.75rem;
+  padding: 2rem;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: var(--shadow-lg);
 }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
 .close-btn { background: none; border: none; font-size: 1.7rem; cursor: pointer; color: #94a3b8; }
 .form-group { margin-bottom: 1rem; }
-.form-group label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 0.3rem; }
+.form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; }
 .form-group input, .form-group textarea, .form-group select {
   width: 100%;
   padding: 0.65rem 0.85rem;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-sm);
   font-family: inherit;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
 }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-.btn-submit-app {
+.btn-submit {
   width: 100%;
   padding: 0.85rem;
   background: var(--primary-accent);
@@ -270,7 +314,23 @@ body { font-family: var(--font-family); background-color: #f8fafc; color: var(--
   border-radius: var(--radius-sm);
   font-weight: 700;
   cursor: pointer;
+  font-size: 0.95rem;
 }
+.btn-submit:hover { background: #1d4ed8; }
+
+/* Resume Drop Area */
+.resume-drop-box {
+  border: 2px dashed #93c5fd;
+  background: #f0f7ff;
+  padding: 1.5rem;
+  text-align: center;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: all 0.2s;
+  display: block;
+}
+.resume-drop-box:hover { background: #e0f0fe; border-color: var(--primary-accent); }
 
 /* Footer */
-.footer { text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.85rem; border-top: 1px solid var(--border-color); }
+.footer { text-align: center; padding: 2.5rem; color: #94a3b8; font-size: 0.85rem; border-top: 1px solid var(--border-color); background: #fff; margin-top: 3rem; }
