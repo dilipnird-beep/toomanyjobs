@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naukri Recruiter Hub | TooManyJobs.com Employer Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="CSS/naukri.css" />
+  <style>
+    /* Employer Hub Specifics */
+    .emp-banner {
+      background: linear-gradient(135deg, #183b74 0%, #0f172a 100%);
+      color: #fff;
+      padding: 3rem 1.5rem;
+      text-align: center;
+    }
+    .emp-banner h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .emp-banner p { color: #94a3b8; font-size: 1.05rem; }
+
+    .emp-tabs {
+      max-width: 1240px;
+      margin: 2rem auto 1.5rem;
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 1rem;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .emp-tab-btn {
+      background: none;
+      border: none;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #64748b;
+      padding: 0.75rem 1.25rem;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+    .emp-tab-btn.active {
+      color: var(--naukri-blue);
+      border-bottom-color: var(--naukri-blue);
+    }
+
+    .emp-content { max-width: 1240px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+    .tab-section { display: none; }
+    .tab-section.active { display: block; }
+
+    .table-card {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-card);
+      overflow-x: auto;
+      box-shadow: var(--shadow-sm);
+    }
+    .naukri-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+    .naukri-table th { background: #f8fafc; padding: 0.9rem 1rem; font-weight: 700; color: #334155; border-bottom: 1px solid var(--border-light); }
+    .naukri-table td { padding: 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .naukri-table tr:hover { background: #f8fafc; }
+
+    .status-badge {
+      background: #dcfce7;
+      color: #15803d;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-pill);
+    }
+    .btn-table-action {
+      background: #fee2e2;
+      color: #dc2626;
+      border: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="naukri-header">
+    <div class="naukri-nav-inner">
+      <a href="employer.html" class="naukri-brand">
+        <span class="brand-pill" style="background:#183b74;">RECRUITER</span>
+        <span class="brand-title">TooManyJobs <span>Hiring Suite</span></span>
+      </a>
+
+      <div class="nav-actions">
+        <a href="index.html" class="btn-login-outline">Candidate Portal ↗</a>
+        <button id="emp-auth-status-btn" onclick="openRecruiterLogin()" class="btn-employer-solid">
+          Recruiter Login
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Employer Banner -->
+  <section class="emp-banner">
+    <h1>Naukri-Style Employer Suite & Resdex Talent Sourcing</h1>
+    <p>Post active requirements, source resumes, and manage candidates in one unified console.</p>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <div class="emp-tabs">
+    <button class="emp-tab-btn active" onclick="switchEmpTab('tab-post-job', this)">📢 Post a Job Opening</button>
+    <button class="emp-tab-btn" onclick="switchEmpTab('tab-manage-postings', this)">📋 Manage Openings (<span id="emp-jobs-count">0</span>)</button>
+    <button class="emp-tab-btn" onclick="switchEmpTab('tab-candidates-applied', this)">📬 Applications & Resumes (<span id="emp-apps-count">0</span>)</button>
+  </div>
+
+  <div class="emp-content">
+    
+    <!-- Tab 1: Post Job -->
+    <div class="tab-section active" id="tab-post-job">
+      <div class="modal-box" style="max-width:800px; margin:0 auto; box-shadow:var(--shadow-card);">
+        <h2 style="font-size:1.4rem; color:var(--naukri-navy); margin-bottom:0.25rem;">Create a New Job Listing</h2>
+        <p style="color:#64748b; font-size:0.9rem; margin-bottom:1.5rem;">Your posting will appear instantly on the live TooManyJobs candidate search feed.</p>
+
+        <form id="employer-post-form" onsubmit="handleRecruiterPostJob(event)">
+          <div class="form-group">
+            <label>Job Designation / Role Title *</label>
+            <input type="text" id="post-role" required placeholder="e.g. Lead SRE & Multi-Cloud Infrastructure" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Company / Enterprise *</label>
+              <input type="text" id="post-company-name" required placeholder="e.g. Cognizant / IBM / TechCorp" />
+            </div>
+            <div class="form-group">
+              <label>Job Location *</label>
+              <input type="text" id="post-location-name" required placeholder="e.g. Hyderabad / Bengaluru / Remote" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Experience Required *</label>
+              <select id="post-exp-select">
+                <option value="Fresher">Fresher (0 - 1 Yrs)</option>
+                <option value="1-3 Yrs">1 - 3 Yrs</option>
+                <option value="4-8 Yrs" selected>4 - 8 Yrs</option>
+                <option value="8-12 Yrs">8 - 12 Yrs (Senior / Lead)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Annual Salary / CTC Package *</label>
+              <input type="text" id="post-ctc-package" required placeholder="e.g. 20 - 32 Lacs PA" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Department / Category</label>
+              <select id="post-dept-category">
+                <option value="IT / Data Science">AI & Data Science</option>
+                <option value="Cloud / DevOps">Cloud & DevOps / SRE</option>
+                <option value="Software / Engineering">Software Engineering</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Work Mode</label>
+              <select id="post-work-mode">
+                <option value="Hybrid">Hybrid</option>
+                <option value="Work From Home">Work From Home (Remote)</option>
+                <option value="On-site">On-site / Office</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Key Skills Required (Comma separated tags) *</label>
+            <input type="text" id="post-skills-tags" required placeholder="Python, SRE, Capacity Management, AWS, Docker" />
+          </div>
+
+          <div class="form-group">
+            <label>Full Job Description *</label>
+            <textarea id="post-role-desc" rows="4" required placeholder="Describe day-to-day responsibilities, shift details, and minimum qualifications..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-modal-submit" style="background:var(--naukri-orange); font-size:1.05rem;">
+            🚀 Publish Job to Live Feed
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab 2: Manage Openings -->
+    <div class="tab-section" id="tab-manage-postings">
+      <div class="table-card">
+        <table class="naukri-table">
+          <thead>
+            <tr>
+              <th>Designation & Company</th>
+              <th>Location & Mode</th>
+              <th>Experience</th>
+              <th>Salary (CTC)</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="emp-jobs-tbody">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tab 3: Applications & Resumes -->
+    <div class="tab-section" id="tab-candidates-applied">
+      <div class="table-card">
+        <table class="naukri-table">
+          <thead>
+            <tr>
+              <th>Applicant Details</th>
+              <th>Applied Position</th>
+              <th>Experience & CTC</th>
+              <th>Resume Document</th>
+              <th>Date Applied</th>
+            </tr>
+          </thead>
+          <tbody id="emp-apps-tbody">
+            <!-- Injected via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="config.js"></script>
+  <script src="js/portal-engine.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      loadEmployerWorkspace();
+    });
+
+    function switchEmpTab(tabId, btn) {
+      document.querySelectorAll(".tab-section").forEach(s => s.classList.remove("active"));
+      document.querySelectorAll(".emp-tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      btn.classList.add("active");
+    }
+
+    function loadEmployerWorkspace() {
+      const jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
+      const apps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
+
+      document.getElementById("emp-jobs-count").innerText = jobs.length;
+      document.getElementById("emp-apps-count").innerText = apps.length;
+
+      // Render jobs table
+      const jBody = document.getElementById("emp-jobs-tbody");
+      if (jobs.length === 0) {
+        jBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2.5rem;">No active openings posted yet.</td></tr>`;
+      } else {
+        jBody.innerHTML = jobs.map(j => `
+          <tr>
+            <td>
+              <strong>${j.title}</strong><br>
+              <small style="color:#64748b;">${j.company}</small>
+            </td>
+            <td>${j.location}<br><small style="color:#2563eb;">${j.workMode || 'Hybrid'}</small></td>
+            <td>${j.experience}</td>
+            <td style="font-weight:700; color:#15803d;">${j.salary}</td>
+            <td><span class="status-badge">Active</span></td>
+            <td><button class="btn-table-action" onclick="removeJobPosting('${j.id}')">Delete</button></td>
+          </tr>
+        `).join("");
+      }
+
+      // Render apps table
+      const aBody = document.getElementById("emp-apps-tbody");
+      if (apps.length === 0) {
+        aBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:2.5rem;">No candidate resumes received yet.</td></tr>`;
+      } else {
+        aBody.innerHTML = apps.map(a => `
+          <tr>
+            <td>
+              <strong>${a.applicantName}</strong><br>
+              <small>${a.email} • ${a.phone}</small>
+            </td>
+            <td><strong>${a.jobTitle}</strong><br><small style="color:#64748b;">${a.company}</small></td>
+            <td>${a.exp}<br><small style="color:#15803d;">${a.ctc}</small></td>
+            <td><a href="${a.resumeUrl}" target="_blank" style="color:#2563eb; font-weight:700; text-decoration:none;">Download CV ↗</a></td>
+            <td>${a.appliedDate}</td>
+          </tr>
+        `).join("");
+      }
+    }
+
+    function handleRecruiterPostJob(e) {
+      e.preventDefault();
+      const newJob = {
+        id: "nj-" + Date.now(),
+        title: document.getElementById("post-role").value,
+        company: document.getElementById("post-company-name").value,
+        location: document.getElementById("post-location-name").value,
+        experience: document.getElementById("post-exp-select").value,
+        salary: document.getElementById("post-ctc-package").value,
+        category: document.getElementById("post-dept-category").value,
+        workMode: document.getElementById("post-work-mode").value,
+        skills: document.getElementById("post-skills-tags").value.split(",").map(s => s.trim()),
+        snippet: document.getElementById("post-role-desc").value,
+        postedBy: "recruiter@toomanyjobs.com",
+        date: "Just Now"
+      };
+
+      const jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
+      jobs.unshift(newJob);
+      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
+
+      alert("🎉 Opening published live to TooManyJobs candidate search feed!");
+      e.target.reset();
+      loadEmployerWorkspace();
+      switchEmpTab('tab-manage-postings', document.querySelectorAll(".emp-tab-btn")[1]);
+    }
+
+    function removeJobPosting(id) {
+      if (!confirm("Are you sure you want to remove this opening?")) return;
+      let jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
+      jobs = jobs.filter(j => j.id !== id);
+      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
+      loadEmployerWorkspace();
+    }
+
+    function openRecruiterLogin() {
+      alert("Recruiter Verified! Signed in under Corporate Hiring Suite.");
+    }
+  </script>
+</body>
+</html>

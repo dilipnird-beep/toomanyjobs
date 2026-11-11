@@ -3,293 +3,274 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TooManyJobs.com | Find Your Next Career Move</title>
+  <title>TooManyJobs.com | Find Your Next Career Move - Naukri Style</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="CSS/style.css" />
+  <link rel="stylesheet" href="CSS/naukri.css" />
 </head>
 <body>
 
-  <!-- Top Navigation Bar -->
-  <header class="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="brand">
-        <span class="brand-badge">TMJ</span>
-        <span class="brand-text">TooMany<span>Jobs</span></span>
+  <!-- Naukri Universal Header -->
+  <header class="naukri-header">
+    <div class="naukri-nav-inner">
+      <a href="index.html" class="naukri-brand">
+        <span class="brand-pill">TMJ</span>
+        <span class="brand-title">TooMany<span>Jobs</span></span>
       </a>
 
+      <nav class="nav-menu">
+        <a href="#jobs-feed">Jobs</a>
+        <a href="#jobs-feed">Companies</a>
+        <a href="#jobs-feed">Services</a>
+      </nav>
+
       <div class="nav-actions">
-        <!-- Candidate Profile Trigger -->
-        <button class="btn-nav btn-candidate" onclick="openCandidateModal()">
-          <span>👤</span> <span id="cand-btn-text">Candidate Login / Register</span>
+        <!-- Candidate Auth -->
+        <button class="btn-login-outline" id="cand-header-btn" onclick="openCandidateAuthModal()">
+          Jobseeker Login
         </button>
 
-        <!-- Employer Job Post Trigger -->
-        <button class="btn-nav btn-employer" onclick="openEmployerModal()">
-          <span>📢</span> <span id="emp-btn-text">Post a Job / For Employers</span>
-        </button>
+        <!-- Employer Mode Link -->
+        <a href="employer.html" class="btn-employer-solid">
+          For Employers ↗
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero & Naukri Search Card -->
-  <section class="hero-section">
-    <h1>Find Your Next Career Move Across India & Global Remote</h1>
-    <p>50,000+ Verified openings from top enterprises, technology pioneers, and startups.</p>
+  <!-- Naukri Capsule Hero Section -->
+  <section class="naukri-hero">
+    <h1>Find Your Dream Job Across India & Global Remote</h1>
+    <p>50,000+ Verified openings across IT, AI Ops, Cloud Infrastructure, and Product Engineering</p>
 
-    <div class="search-box-card">
-      <div class="search-input-group">
+    <!-- Search Capsule Form -->
+    <div class="naukri-search-capsule">
+      <div class="capsule-col">
         <span>🔍</span>
-        <input type="text" id="search-keyword" placeholder="Search by skills (e.g. Python, AWS, SRE), role, company..." />
+        <input type="text" id="search-keyword" placeholder="Enter skills / designations / companies" oninput="executeNaukriSearch()" />
       </div>
-      <div class="search-input-group">
+      <div class="capsule-col">
         <span>📍</span>
-        <input type="text" id="search-location" placeholder="Location (e.g. Hyderabad, Bengaluru, Remote)" />
+        <input type="text" id="search-location" placeholder="Enter location (e.g. Hyderabad, Bengaluru)" oninput="executeNaukriSearch()" />
       </div>
-      <div class="search-input-group">
+      <div class="capsule-col">
         <span>💼</span>
-        <select id="search-experience">
-          <option value="">Any Experience</option>
-          <option value="Fresher">Fresher / 0-1 Yrs</option>
-          <option value="1-3 Years">1 - 3 Years</option>
-          <option value="3-7 Years">3 - 7 Years</option>
-          <option value="8+ Years">8+ Years (Leadership)</option>
+        <select id="search-experience" onchange="executeNaukriSearch()">
+          <option value="">Select experience</option>
+          <option value="Fresher">Fresher (0 - 1 Yrs)</option>
+          <option value="1-3">1 - 3 Yrs</option>
+          <option value="4-8">4 - 8 Yrs</option>
+          <option value="8-12">8 - 12 Yrs (Senior / Lead)</option>
         </select>
       </div>
-      <button class="btn-search" onclick="applyFilters()">Search Jobs</button>
+      <button class="btn-capsule-search" onclick="executeNaukriSearch()">Search</button>
     </div>
 
-    <!-- Quick Pill Badges -->
-    <div class="quick-tags" id="categories">
-      <span class="tag-label">Trending Sectors:</span>
-      <button class="pill-tag active" onclick="filterByTag('All', this)">All</button>
-      <button class="pill-tag" onclick="filterByTag('Software / IT', this)">Software & IT</button>
-      <button class="pill-tag" onclick="filterByTag('AI / Data Science', this)">AI & Prompt Ops</button>
-      <button class="pill-tag" onclick="filterByTag('Cloud / DevOps', this)">Cloud & SRE</button>
-      <button class="pill-tag" onclick="filterByTag('Remote', this)">Work From Home</button>
+    <!-- Trending Quick Pills -->
+    <div class="naukri-trending-pills">
+      <span class="pill-title">Popular Searches:</span>
+      <button class="naukri-pill active" onclick="filterByPill('All', this)">All Jobs</button>
+      <button class="naukri-pill" onclick="filterByPill('IT / Data Science', this)">AI & Prompt Ops</button>
+      <button class="naukri-pill" onclick="filterByPill('Cloud / DevOps', this)">Cloud & SRE</button>
+      <button class="naukri-pill" onclick="filterByPill('Software / Engineering', this)">Full Stack</button>
+      <button class="naukri-pill" onclick="filterByPill('Work From Home', this)">Remote</button>
     </div>
   </section>
 
-  <!-- Main Feed -->
-  <main class="container">
+  <!-- Main Candidate Layout: Left Filter Sidebar + Right Job Feed -->
+  <div class="portal-layout" id="jobs-feed">
 
-    <!-- Active Candidate Strip -->
-    <div id="candidate-banner" class="user-status-strip" style="display:none;">
-      <div>
-        👋 <strong>Candidate Active:</strong> <span id="candidate-banner-name">Candidate</span> • 1-Click Fast Apply Enabled
+    <!-- Left Filter Column (Naukri Style) -->
+    <aside class="naukri-sidebar">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <h3 style="font-size:1.05rem; font-weight:800; color:var(--naukri-navy);">All Filters</h3>
+        <button onclick="resetAllNaukriFilters()" style="background:none; border:none; color:var(--naukri-blue); font-size:0.82rem; font-weight:700; cursor:pointer;">Reset</button>
       </div>
-      <button onclick="handleCandidateLogout()" style="background:#fff; border:1px solid #bae6fd; color:#0369a1; padding:0.3rem 0.75rem; border-radius:6px; cursor:pointer; font-weight:700;">Sign Out</button>
-    </div>
 
-    <div class="results-header">
-      <div>
-        <h2>Showing <span id="job-count">0</span> Active Openings</h2>
-        <p class="subtext">Curated opportunities updated in real-time</p>
+      <!-- Work Mode Filter -->
+      <div class="filter-group">
+        <h4>Work Mode</h4>
+        <label class="filter-item">
+          <input type="checkbox" class="cb-workmode" value="Work From Home" onchange="executeNaukriSearch()" /> Work From Home
+        </label>
+        <label class="filter-item">
+          <input type="checkbox" class="cb-workmode" value="Hybrid" onchange="executeNaukriSearch()" /> Hybrid
+        </label>
+        <label class="filter-item">
+          <input type="checkbox" class="cb-workmode" value="On-site" onchange="executeNaukriSearch()" /> On-site / Office
+        </label>
       </div>
-      <button class="btn-reset" onclick="resetAllFilters()">Reset All Filters</button>
-    </div>
 
-    <div class="job-list-grid" id="job-cards-wrapper">
-      <!-- Injected by JavaScript -->
-    </div>
-  </main>
+      <!-- Department Filter -->
+      <div class="filter-group">
+        <h4>Department / Role</h4>
+        <label class="filter-item">
+          <input type="checkbox" class="cb-dept" value="IT / Data Science" onchange="executeNaukriSearch()" /> AI & Data Science
+        </label>
+        <label class="filter-item">
+          <input type="checkbox" class="cb-dept" value="Cloud / DevOps" onchange="executeNaukriSearch()" /> Cloud Infrastructure & SRE
+        </label>
+        <label class="filter-item">
+          <input type="checkbox" class="cb-dept" value="Software / Engineering" onchange="executeNaukriSearch()" /> Software Engineering
+        </label>
+      </div>
 
-  <!-- Candidate Modal (With Resume Upload & Auto-Profile Ingestion) -->
-  <div class="modal-overlay" id="candidate-modal">
+      <!-- Experience Ranges -->
+      <div class="filter-group">
+        <h4>Salary (Lacs PA)</h4>
+        <label class="filter-item"><input type="checkbox" disabled checked /> 6 - 15 Lacs</label>
+        <label class="filter-item"><input type="checkbox" disabled checked /> 15 - 25 Lacs</label>
+        <label class="filter-item"><input type="checkbox" disabled checked /> 25+ Lacs PA</label>
+      </div>
+    </aside>
+
+    <!-- Right Job Feed Column -->
+    <main>
+      <!-- Candidate Greeting Strip (If Signed In) -->
+      <div id="cand-welcome-banner" class="candidate-welcome-bar" style="display:none;">
+        <div>
+          🎉 <strong>Naukri FastApply Active:</strong> Welcome, <span id="cand-name-tag">Dr. Dilip Bathena</span>! (1-Click Application Mode enabled).
+        </div>
+        <button onclick="handleCandidateSignOut()" style="background:#fff; border:1px solid #bfdbfe; color:#1e3a8a; padding:0.35rem 0.85rem; border-radius:999px; font-weight:700; cursor:pointer;">Sign Out</button>
+      </div>
+
+      <div class="job-feed-header">
+        <h2>1 - <span id="job-feed-count">0</span> of active vacancies</h2>
+        <span style="font-size:0.85rem; color:#64748b;">Sorted by: <strong>Freshness</strong></span>
+      </div>
+
+      <!-- Job Cards Container -->
+      <div class="job-feed-list" id="naukri-job-list">
+        <!-- Injected via JavaScript -->
+      </div>
+    </main>
+
+  </div>
+
+  <!-- Candidate Modal (Naukri "Upload & Sit Back" Resume Ingestion) -->
+  <div class="modal-overlay" id="candidate-auth-modal">
     <div class="modal-box">
       <div class="modal-header">
         <div>
-          <h3>Candidate Profile & Resume Ingestion</h3>
-          <p style="font-size:0.85rem; color:#64748b;">Drop your resume to auto-fill your profile details</p>
+          <h3 style="font-size:1.35rem; color:var(--naukri-navy);">Jobseeker Registration & Resume Upload</h3>
+          <p style="font-size:0.85rem; color:#64748b;">Upload resume to auto-build your Naukri profile</p>
         </div>
-        <button class="close-btn" onclick="closeCandidateModal()">&times;</button>
+        <button class="btn-close-modal" onclick="closeCandidateAuthModal()">&times;</button>
       </div>
 
-      <!-- Resume Drop Zone -->
-      <label class="resume-drop-box">
-        <input type="file" id="resume-file-input" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeFileSelect(event)" />
-        <div style="font-size:2rem; margin-bottom:0.25rem;">📄</div>
-        <strong>Click to upload Resume (PDF / DOCX)</strong>
-        <p style="font-size:0.8rem; color:#64748b; margin-top:0.25rem;">Our parser auto-extracts your skills, experience, and contact details</p>
+      <!-- Resume Drop Area -->
+      <label class="resume-upload-card">
+        <input type="file" id="cand-file" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeFileAnalysis(event)" />
+        <div style="font-size:2.5rem; margin-bottom:0.25rem;">📄</div>
+        <strong style="color:var(--naukri-navy); font-size:1rem;">Upload Resume (PDF / DOCX)</strong>
+        <p style="font-size:0.8rem; color:#64748b; margin-top:0.25rem;">Naukri parser auto-extracts your mobile, email, skills, and experience</p>
       </label>
-      <div id="parsing-status-msg" style="font-size:0.85rem; color:#2563eb; font-weight:600; margin-bottom:1rem; text-align:center;"></div>
+      <div id="parse-status-text" style="font-size:0.85rem; color:var(--naukri-blue); font-weight:700; text-align:center; margin-bottom:1rem;"></div>
 
       <div style="text-align:center; margin:0.5rem 0 1rem; color:#888; font-size:0.85rem;">— OR SIGN IN WITH GOOGLE —</div>
 
-      <button type="button" onclick="handleCandidateGoogleSignIn()" style="width:100%; padding:0.75rem; background:#fff; border:1px solid #cbd5e1; border-radius:6px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; font-size:0.9rem; margin-bottom:1.5rem;">
+      <button type="button" onclick="handleCandidateGoogleLogin()" style="width:100%; padding:0.75rem; background:#fff; border:1px solid #cbd5e1; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; font-size:0.92rem; margin-bottom:1.5rem;">
         <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        One-Click Sign In with Google
+        Continue with Google ID
       </button>
 
-      <form onsubmit="handleSaveCandidateProfile(event)">
+      <!-- Profile Form -->
+      <form onsubmit="handleCandidateRegister(event)">
         <div class="form-group">
           <label>Full Name *</label>
-          <input type="text" id="cand-name" required placeholder="e.g. John Doe" />
+          <input type="text" id="cand-reg-name" required placeholder="e.g. Dr. Dilip Bathena" />
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Email *</label>
-            <input type="email" id="cand-email" required placeholder="name@domain.com" />
+            <label>Email Address *</label>
+            <input type="email" id="cand-reg-email" required placeholder="dilip.bath@gmail.com" />
           </div>
           <div class="form-group">
-            <label>Phone *</label>
-            <input type="tel" id="cand-phone" required placeholder="9876543210" />
+            <label>Mobile Number *</label>
+            <input type="tel" id="cand-reg-phone" required placeholder="9618706066" />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label>Experience</label>
-            <select id="cand-exp">
-              <option value="Fresher">Fresher</option>
-              <option value="1-3 Years">1-3 Years</option>
-              <option value="3-7 Years">3-7 Years</option>
-              <option value="8+ Years">8+ Years</option>
+            <label>Experience *</label>
+            <select id="cand-reg-exp">
+              <option value="Fresher">Fresher (0 - 1 Yrs)</option>
+              <option value="1-3 Yrs">1 - 3 Yrs</option>
+              <option value="4-8 Yrs">4 - 8 Yrs</option>
+              <option value="8-12 Yrs" selected>8 - 12 Yrs (Senior / Lead)</option>
             </select>
           </div>
           <div class="form-group">
             <label>Expected CTC</label>
-            <input type="text" id="cand-ctc" placeholder="e.g. 24 LPA" />
+            <input type="text" id="cand-reg-ctc" placeholder="e.g. 35 Lacs PA" />
           </div>
         </div>
         <div class="form-group">
-          <label>Key Skills (Auto-Extracted)</label>
-          <input type="text" id="cand-skills" placeholder="Python, SRE, AWS, Docker..." />
+          <label>Key Skills (Extracted)</label>
+          <input type="text" id="cand-reg-skills" placeholder="Python, SRE, AWS, Capacity Management..." />
         </div>
         <div class="form-group">
-          <label>Resume Link / File Reference</label>
-          <input type="text" id="cand-resume-url" placeholder="https://drive.google.com/..." />
+          <label>Resume Link / Cloud Storage Path</label>
+          <input type="text" id="cand-reg-resume" placeholder="https://..." />
         </div>
-        <button type="submit" class="btn-submit">Save Candidate Profile</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Employer Modal (Post Job Ads) -->
-  <div class="modal-overlay" id="employer-modal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <div>
-          <h3>Employer Workspace</h3>
-          <p style="font-size:0.85rem; color:#64748b;">Post an active job listing to TooManyJobs</p>
-        </div>
-        <button class="close-btn" onclick="closeEmployerModal()">&times;</button>
-      </div>
-
-      <div id="emp-auth-section" style="margin-bottom:1.5rem;">
-        <button type="button" onclick="handleEmployerGoogleSignIn()" style="width:100%; padding:0.75rem; background:#fff; border:1px solid #cbd5e1; border-radius:6px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; font-size:0.9rem;">
-          <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-          Sign In with Corporate Google ID
-        </button>
-      </div>
-
-      <form id="emp-job-form" onsubmit="handlePostJob(event)">
-        <div class="form-group">
-          <label>Job Title *</label>
-          <input type="text" id="emp-job-title" required placeholder="e.g. Senior SRE Engineer" />
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Company Name *</label>
-            <input type="text" id="emp-job-company" required placeholder="e.g. CloudTech Systems" />
-          </div>
-          <div class="form-group">
-            <label>Location *</label>
-            <input type="text" id="emp-job-location" required placeholder="e.g. Hyderabad / Remote" />
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Experience Required</label>
-            <select id="emp-job-exp">
-              <option value="Fresher">Fresher (0-1 Yrs)</option>
-              <option value="1-3 Years">1-3 Years</option>
-              <option value="3-7 Years" selected>3-7 Years</option>
-              <option value="8+ Years">8+ Years</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Salary Package</label>
-            <input type="text" id="emp-job-salary" placeholder="e.g. ₹18 - 25 LPA" />
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Category Sector</label>
-          <select id="emp-job-category">
-            <option value="Software / IT">Software / IT</option>
-            <option value="AI / Data Science">AI / Data Science</option>
-            <option value="Cloud / DevOps">Cloud / DevOps</option>
-            <option value="Remote">Remote</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Mandatory Skills (Comma separated) *</label>
-          <input type="text" id="emp-job-skills" required placeholder="Python, Docker, AWS, SRE" />
-        </div>
-        <div class="form-group">
-          <label>Job Description *</label>
-          <textarea id="emp-job-desc" rows="4" required placeholder="Roles, day-to-day responsibilities, qualifications..."></textarea>
-        </div>
-        <button type="submit" class="btn-submit" style="background:var(--primary-naukri);">Publish Job Opening</button>
+        <button type="submit" class="btn-modal-submit">Save & Activate Profile</button>
       </form>
     </div>
   </div>
 
   <!-- Guest Quick Apply Modal -->
-  <div class="modal-overlay" id="apply-modal">
+  <div class="modal-overlay" id="naukri-apply-modal">
     <div class="modal-box">
       <div class="modal-header">
         <div>
-          <h3 id="modal-job-title">Apply for Position</h3>
-          <p id="modal-job-company" style="font-size:0.85rem; color:#64748b;">Company Name</p>
+          <h3 id="modal-apply-title" style="color:var(--naukri-navy);">Apply for Position</h3>
+          <p id="modal-apply-sub" style="font-size:0.85rem; color:#64748b;">Company details</p>
         </div>
-        <button class="close-btn" onclick="closeApplyModal()">&times;</button>
+        <button class="btn-close-modal" onclick="closeNaukriApplyModal()">&times;</button>
       </div>
 
-      <form onsubmit="handleApplySubmit(event)">
-        <input type="hidden" id="apply-job-id" />
+      <form onsubmit="handleQuickApplySubmit(event)">
+        <input type="hidden" id="modal-apply-job-id" />
         <div class="form-group">
           <label>Full Name *</label>
-          <input type="text" id="applicant-name" required placeholder="e.g. John Doe" />
+          <input type="text" id="guest-name" required placeholder="e.g. John Doe" />
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Email *</label>
-            <input type="email" id="applicant-email" required placeholder="name@domain.com" />
+            <input type="email" id="guest-email" required placeholder="name@domain.com" />
           </div>
           <div class="form-group">
             <label>Phone *</label>
-            <input type="tel" id="applicant-phone" required placeholder="9876543210" />
+            <input type="tel" id="guest-phone" required placeholder="9876543210" />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Experience</label>
-            <input type="text" id="applicant-exp" required placeholder="e.g. 5 Years" />
+            <input type="text" id="guest-exp" required placeholder="e.g. 5 Yrs" />
           </div>
           <div class="form-group">
-            <label>Expected CTC</label>
-            <input type="text" id="applicant-ctc" required placeholder="e.g. 20 LPA" />
+            <label>Current / Expected CTC</label>
+            <input type="text" id="guest-ctc" required placeholder="e.g. 20 Lacs PA" />
           </div>
         </div>
         <div class="form-group">
-          <label>Resume URL (Google Drive / GitHub) *</label>
-          <input type="url" id="applicant-resume" required placeholder="https://..." />
+          <label>Resume Link (Google Drive / GitHub) *</label>
+          <input type="url" id="guest-resume" required placeholder="https://..." />
         </div>
-        <div class="form-group">
-          <label>Cover Note</label>
-          <textarea id="applicant-note" rows="3" placeholder="Brief note to recruiter..."></textarea>
-        </div>
-        <button type="submit" class="btn-submit">Submit Application</button>
+        <button type="submit" class="btn-modal-submit">Confirm Application</button>
       </form>
     </div>
   </div>
 
-  <footer class="footer">
-    <p>&copy; 2026 TooManyJobs.com • Lightweight Naukri-Architecture Job Board</p>
+  <!-- Footer -->
+  <footer class="naukri-footer">
+    <p>&copy; 2026 TooManyJobs.com • Complete Naukri-Style Candidate & Recruiter Architecture</p>
   </footer>
 
   <script src="config.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/portal-engine.js"></script>
 </body>
 </html>

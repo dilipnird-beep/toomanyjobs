@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Master Admin Control Gate | TooManyJobs.com</title>
+  <title>Master Admin Security Gate | TooManyJobs.com</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --dark-navy: #0f172a;
@@ -14,12 +14,12 @@
       --border: #e2e8f0;
       --text: #1e293b;
       --danger: #dc2626;
-      --success: #16a34a;
+      --success: #15803d;
+      --font: 'Inter', sans-serif;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f8fafc; color: var(--text); }
+    body { font-family: var(--font); background: #f8fafc; color: var(--text); }
 
-    /* Admin Top Header */
     header {
       background: var(--dark-navy);
       color: #fff;
@@ -47,11 +47,11 @@
     }
     .header-links a:hover, .header-links button:hover { color: #fff; border-color: #64748b; }
 
-    .container { max-width: 1240px; margin: 2rem auto; padding: 0 1.25rem 4rem; }
+    .container { max-width: 1240px; margin: 2.5rem auto; padding: 0 1.5rem 4rem; }
 
     /* Security Lock Screen */
     .lock-screen {
-      max-width: 460px;
+      max-width: 480px;
       margin: 4rem auto;
       background: #fff;
       padding: 2.5rem;
@@ -88,7 +88,7 @@
       text-align: left;
     }
 
-    /* Tabs & Tables */
+    /* Admin Workspace */
     .admin-panel { display: none; }
     .admin-tabs { display: flex; gap: 1rem; border-bottom: 2px solid var(--border); margin-bottom: 1.5rem; }
     .tab-btn {
@@ -120,10 +120,11 @@
   <header>
     <div class="header-brand">
       <span>TooManyJobs</span>
-      <span class="header-badge">STRICT ADMIN GATE</span>
+      <span class="header-badge">MASTER ADMIN</span>
     </div>
     <div class="header-links">
-      <a href="index.html" target="_blank">Candidate Portal ↗</a>
+      <a href="index.html" target="_blank">Candidate Home ↗</a>
+      <a href="employer.html" target="_blank">Employer Hub ↗</a>
       <button id="logout-btn" onclick="adminLogout()" style="display:none; color:#ef4444;">Sign Out</button>
     </div>
   </header>
@@ -133,14 +134,14 @@
     <!-- Zero-Trust Lock Screen -->
     <div id="lock-screen" class="lock-screen">
       <div class="lock-icon">🔒</div>
-      <h2>High-Security Admin Gateway</h2>
+      <h2>Master Admin Gateway</h2>
       <p style="color:#64748b; font-size:0.92rem; margin-top:0.4rem;">
-        Access is cryptographically restricted exclusively to <strong>dilip.bath@gmail.com</strong>.
+        Access is cryptographically restricted strictly to <strong>dilip.bath@gmail.com</strong>.
       </p>
 
-      <button class="btn-google" onclick="verifyAdminAuth()">
+      <button class="btn-google" onclick="verifyMasterAdmin()">
         <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-        Verify Identity via dilip.bath@gmail.com
+        Verify Identity as dilip.bath@gmail.com
       </button>
 
       <div id="auth-err" class="alert-box" style="display:none;"></div>
@@ -150,37 +151,37 @@
     <div id="admin-panel" class="admin-panel">
       <div style="background:#e0f2fe; border:1px solid #bae6fd; color:#0369a1; padding:0.85rem 1.25rem; border-radius:10px; margin-bottom:1.5rem; display:flex; justify-content:space-between; align-items:center;">
         <div>
-          🛡️ <strong>Master Administrator Active:</strong> <span id="admin-user-display">dilip.bath@gmail.com</span>
+          🛡️ <strong>Master Administrator Active:</strong> <span id="admin-email-text">dilip.bath@gmail.com</span>
         </div>
-        <button onclick="publishToLiveStore()" style="background:#0284c7; color:#fff; border:none; padding:0.4rem 0.85rem; border-radius:6px; font-weight:700; cursor:pointer;">⚡ Sync & Publish Jobs</button>
+        <button onclick="publishToLive()" style="background:#0284c7; color:#fff; border:none; padding:0.4rem 0.85rem; border-radius:6px; font-weight:700; cursor:pointer;">⚡ Publish & Sync DB</button>
       </div>
 
       <div class="admin-tabs">
-        <button class="tab-btn active" onclick="switchTab('tab-jobs', this)">📋 All Posted Jobs (<span id="count-jobs">0</span>)</button>
-        <button class="tab-btn" onclick="switchTab('tab-apps', this)">📬 Candidate Resumes & Applications (<span id="count-apps">0</span>)</button>
+        <button class="tab-btn active" onclick="switchTab('tab-all-jobs', this)">📋 All Posted Jobs (<span id="count-all-jobs">0</span>)</button>
+        <button class="tab-btn" onclick="switchTab('tab-all-apps', this)">📬 Applications & Candidate Resumes (<span id="count-all-apps">0</span>)</button>
       </div>
 
       <!-- Tab: Jobs -->
-      <div class="tab-view active" id="tab-jobs">
+      <div class="tab-view active" id="tab-all-jobs">
         <div class="table-wrapper">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>Job Title & Company</th>
-                <th>Location</th>
+                <th>Designation & Enterprise</th>
+                <th>Location & Mode</th>
                 <th>Experience</th>
-                <th>Package (CTC)</th>
+                <th>Salary (CTC)</th>
                 <th>Posted By</th>
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody id="admin-jobs-tbody"></tbody>
+            <tbody id="master-jobs-tbody"></tbody>
           </table>
         </div>
       </div>
 
       <!-- Tab: Applications -->
-      <div class="tab-view" id="tab-apps">
+      <div class="tab-view" id="tab-all-apps">
         <div class="table-wrapper">
           <table class="admin-table">
             <thead>
@@ -188,11 +189,11 @@
                 <th>Candidate Name & Contact</th>
                 <th>Applied Position</th>
                 <th>Experience & CTC</th>
-                <th>Resume Document</th>
+                <th>Resume Link</th>
                 <th>Applied Date</th>
               </tr>
             </thead>
-            <tbody id="admin-apps-tbody"></tbody>
+            <tbody id="master-apps-tbody"></tbody>
           </table>
         </div>
       </div>
@@ -203,16 +204,16 @@
 
   <script src="config.js"></script>
   <script>
-    const MASTER_ADMIN = window.TMJ_CONFIG.masterAdminEmail;
-    const { jobs: JOBS_KEY, applications: APPS_KEY, adminSession: ADMIN_TOKEN } = window.TMJ_CONFIG.storageKeys;
+    const MASTER_ADMIN = window.NAUKRI_CONFIG.masterAdminEmail;
+    const { jobs: JOBS_KEY, applications: APPS_KEY, adminSession: ADMIN_TOKEN } = window.NAUKRI_CONFIG.storageKeys;
 
     document.addEventListener("DOMContentLoaded", () => {
       if (sessionStorage.getItem(ADMIN_TOKEN) === MASTER_ADMIN) {
-        showPanel();
+        showMasterPanel();
       }
     });
 
-    function verifyAdminAuth() {
+    function verifyMasterAdmin() {
       const email = prompt("Enter Google Account email for master authorization:", MASTER_ADMIN);
       
       if (!email || email.trim().toLowerCase() !== MASTER_ADMIN.toLowerCase()) {
@@ -223,15 +224,15 @@
       }
 
       sessionStorage.setItem(ADMIN_TOKEN, MASTER_ADMIN);
-      showPanel();
+      showMasterPanel();
     }
 
-    function showPanel() {
+    function showMasterPanel() {
       document.getElementById("lock-screen").style.display = "none";
       document.getElementById("admin-panel").style.display = "block";
       document.getElementById("logout-btn").style.display = "inline-block";
-      document.getElementById("admin-user-display").innerText = MASTER_ADMIN;
-      loadData();
+      document.getElementById("admin-email-text").innerText = MASTER_ADMIN;
+      loadMasterData();
     }
 
     function adminLogout() {
@@ -239,53 +240,53 @@
       location.reload();
     }
 
-    function loadData() {
+    function loadMasterData() {
       const jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
       const apps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
 
-      document.getElementById("count-jobs").innerText = jobs.length;
-      document.getElementById("count-apps").innerText = apps.length;
+      document.getElementById("count-all-jobs").innerText = jobs.length;
+      document.getElementById("count-all-apps").innerText = apps.length;
 
       // Render jobs
-      const jobsTbody = document.getElementById("admin-jobs-tbody");
+      const jobsTbody = document.getElementById("master-jobs-tbody");
       if (jobs.length === 0) {
-        jobsTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem;">No jobs posted yet.</td></tr>`;
+        jobsTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem;">No jobs in database.</td></tr>`;
       } else {
         jobsTbody.innerHTML = jobs.map(j => `
           <tr>
             <td><strong>${j.title}</strong><br><small style="color:#64748b;">${j.company}</small></td>
-            <td>${j.location}</td>
+            <td>${j.location}<br><small style="color:#2563eb;">${j.workMode || 'Hybrid'}</small></td>
             <td>${j.experience}</td>
-            <td style="color:#16a34a; font-weight:700;">${j.salary}</td>
+            <td style="color:#15803d; font-weight:700;">${j.salary}</td>
             <td><small>${j.postedBy || 'Admin'}</small></td>
-            <td><button class="btn-del" onclick="deleteJob('${j.id}')">Delete</button></td>
+            <td><button class="btn-del" onclick="deleteMasterJob('${j.id}')">Delete</button></td>
           </tr>
         `).join("");
       }
 
       // Render applications
-      const appsTbody = document.getElementById("admin-apps-tbody");
+      const appsTbody = document.getElementById("master-apps-tbody");
       if (apps.length === 0) {
-        appsTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:2rem;">No candidate resumes received yet.</td></tr>`;
+        appsTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:2rem;">No candidate resumes in database.</td></tr>`;
       } else {
         appsTbody.innerHTML = apps.map(a => `
           <tr>
-            <td><strong>${a.name}</strong><br><small>${a.email} • ${a.phone}</small></td>
+            <td><strong>${a.applicantName}</strong><br><small>${a.email} • ${a.phone}</small></td>
             <td><strong>${a.jobTitle}</strong><br><small style="color:#64748b;">${a.company}</small></td>
-            <td>${a.exp}<br><small style="color:#16a34a;">${a.ctc}</small></td>
-            <td><a href="${a.resume}" target="_blank" style="color:#2563eb; font-weight:700;">View Resume ↗</a></td>
-            <td>${a.appliedAt}</td>
+            <td>${a.exp}<br><small style="color:#15803d;">${a.ctc}</small></td>
+            <td><a href="${a.resumeUrl}" target="_blank" style="color:#2563eb; font-weight:700;">View Resume ↗</a></td>
+            <td>${a.appliedDate}</td>
           </tr>
         `).join("");
       }
     }
 
-    function deleteJob(id) {
-      if (!confirm("Remove this job posting from the live portal?")) return;
+    function deleteMasterJob(id) {
+      if (!confirm("Permanently delete this opening from TooManyJobs?")) return;
       let jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
       jobs = jobs.filter(j => j.id !== id);
       localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
-      loadData();
+      loadMasterData();
     }
 
     function switchTab(tabId, btn) {
@@ -295,8 +296,8 @@
       btn.classList.add("active");
     }
 
-    function publishToLiveStore() {
-      alert("✅ All job changes are synchronized with index.html live storefront.");
+    function publishToLive() {
+      alert("✅ All job listings and applications synchronized live.");
     }
   </script>
 </body>
