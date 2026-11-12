@@ -3,331 +3,540 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Naukri Recruiter Hub | TooManyJobs.com Employer Portal</title>
+  <title>Employer & Recruiter Hub | TooManyJobs.com</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="CSS/naukri.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    /* Employer Hub Specifics */
-    .emp-banner {
-      background: linear-gradient(135deg, #183b74 0%, #0f172a 100%);
+    :root {
+      --brand-navy: #0a2540;
+      --brand-blue: #185adb;
+      --brand-orange: #ff6b35;
+      --brand-orange-hover: #e8551f;
+      --bg-page: #f8fafc;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --radius-pill: 999px;
+      --radius-card: 14px;
+      --radius-sm: 8px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-page); color: var(--text-main); }
+
+    /* HEADER */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.65rem 1.5rem;
+    }
+    .header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+    .brand-img-logo {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+    .brand-text-col { display: flex; flex-direction: column; }
+    .brand-main-name { font-size: 1.4rem; font-weight: 800; color: var(--brand-navy); line-height: 1.1; }
+    .brand-main-name span { color: var(--brand-orange); }
+    .brand-tagline { font-size: 0.7rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; }
+
+    .header-links a, .header-links button {
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+    }
+    .link-cand {
+      color: var(--brand-blue);
+      border: 1.5px solid var(--brand-blue);
+      background: transparent;
+      margin-right: 0.75rem;
+    }
+    .btn-emp-auth {
+      background: var(--brand-orange);
+      color: #fff;
+      border: none;
+    }
+
+    /* HERO BANNER */
+    .emp-hero {
+      background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 100%);
       color: #fff;
       padding: 3rem 1.5rem;
       text-align: center;
     }
-    .emp-banner h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem; }
-    .emp-banner p { color: #94a3b8; font-size: 1.05rem; }
+    .emp-hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.4rem; }
+    .emp-hero p { color: #94a3b8; font-size: 1.05rem; }
 
-    .emp-tabs {
+    /* MEMBERSHIP PACKAGE BADGE */
+    .membership-tier-bar {
       max-width: 1240px;
-      margin: 2rem auto 1.5rem;
+      margin: 1.5rem auto 0;
       padding: 0 1.5rem;
-      display: flex;
-      gap: 1rem;
-      border-bottom: 2px solid #e2e8f0;
     }
-    .emp-tab-btn {
+    .tier-card-badge {
+      background: #eff6ff;
+      border: 1.5px solid #bfdbfe;
+      color: #1e3a8a;
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-size: 0.92rem;
+    }
+
+    /* CONTAINER & TABS */
+    .emp-container { max-width: 1240px; margin: 2rem auto; padding: 0 1.5rem 4rem; }
+    .tabs-row { display: flex; gap: 1rem; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; }
+    .tab-btn {
       background: none;
       border: none;
       font-size: 1.05rem;
       font-weight: 700;
-      color: #64748b;
+      color: var(--text-muted);
       padding: 0.75rem 1.25rem;
       cursor: pointer;
       border-bottom: 3px solid transparent;
       margin-bottom: -2px;
     }
-    .emp-tab-btn.active {
-      color: var(--naukri-blue);
-      border-bottom-color: var(--naukri-blue);
-    }
+    .tab-btn.active { color: var(--brand-orange); border-bottom-color: var(--brand-orange); }
 
-    .emp-content { max-width: 1240px; margin: 0 auto; padding: 0 1.5rem 5rem; }
-    .tab-section { display: none; }
-    .tab-section.active { display: block; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
 
-    .table-card {
+    /* CARD & FORMS */
+    .form-card {
       background: #fff;
-      border: 1px solid var(--border-light);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-card);
-      overflow-x: auto;
-      box-shadow: var(--shadow-sm);
+      padding: 2rem;
+      max-width: 820px;
+      margin: 0 auto;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
     }
-    .naukri-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
-    .naukri-table th { background: #f8fafc; padding: 0.9rem 1rem; font-weight: 700; color: #334155; border-bottom: 1px solid var(--border-light); }
-    .naukri-table td { padding: 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
-    .naukri-table tr:hover { background: #f8fafc; }
-
-    .status-badge {
-      background: #dcfce7;
-      color: #15803d;
-      font-weight: 700;
-      font-size: 0.75rem;
-      padding: 0.2rem 0.6rem;
-      border-radius: var(--radius-pill);
+    .form-group { margin-bottom: 1.15rem; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.35rem; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.92rem;
     }
-    .btn-table-action {
-      background: #fee2e2;
-      color: #dc2626;
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn-submit-job {
+      width: 100%;
+      padding: 0.85rem;
+      background: var(--brand-orange);
+      color: #fff;
       border: none;
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
+      border-radius: var(--radius-pill);
       font-weight: 700;
+      font-size: 1rem;
       cursor: pointer;
+    }
+
+    /* TABLE */
+    .table-card { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-card); overflow-x: auto; }
+    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+    .data-table th { background: #f8fafc; padding: 0.9rem 1rem; font-weight: 700; color: #475569; border-bottom: 1px solid var(--border-color); }
+    .data-table td { padding: 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+    .btn-del { background: #fee2e2; color: #dc2626; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-weight: 700; cursor: pointer; }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,37,64,0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 1rem;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal-surface {
+      background: #fff;
+      border-radius: var(--radius-card);
+      max-width: 520px;
+      width: 100%;
+      padding: 2.2rem;
+      box-shadow: 0 14px 34px rgba(10,37,64,0.15);
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="naukri-header">
-    <div class="naukri-nav-inner">
-      <a href="employer.html" class="naukri-brand">
-        <span class="brand-pill" style="background:#183b74;">RECRUITER</span>
-        <span class="brand-title">TooManyJobs <span>Hiring Suite</span></span>
+  <!-- HEADER -->
+  <header>
+    <div class="header-inner">
+      <a href="index.html" class="brand-logo-wrap">
+        <img src="cropped-logo.png" alt="Bluestone Consultancy Logo" class="brand-img-logo" onerror="this.style.display='none'" />
+        <div class="brand-text-col">
+          <div class="brand-main-name">TooMany<span>Jobs</span>.com</div>
+          <div class="brand-tagline">Employer Suite</div>
+        </div>
       </a>
 
-      <div class="nav-actions">
-        <a href="index.html" class="btn-login-outline">Candidate Portal ↗</a>
-        <button id="emp-auth-status-btn" onclick="openRecruiterLogin()" class="btn-employer-solid">
-          Recruiter Login
-        </button>
+      <div class="header-links">
+        <a href="index.html" class="link-cand">Candidate Portal ↗</a>
+        <button class="btn-emp-auth" id="header-auth-action" onclick="openEmployerAuthModal()">Employer Login</button>
       </div>
     </div>
   </header>
 
-  <!-- Employer Banner -->
-  <section class="emp-banner">
-    <h1>Naukri-Style Employer Suite & Resdex Talent Sourcing</h1>
+  <!-- HERO -->
+  <section class="emp-hero">
+    <h1>TooManyJobs Employer Suite & Talent Sourcing</h1>
     <p>Post active requirements, source resumes, and manage candidates in one unified console.</p>
   </section>
 
-  <!-- Navigation Tabs -->
-  <div class="emp-tabs">
-    <button class="emp-tab-btn active" onclick="switchEmpTab('tab-post-job', this)">📢 Post a Job Opening</button>
-    <button class="emp-tab-btn" onclick="switchEmpTab('tab-manage-postings', this)">📋 Manage Openings (<span id="emp-jobs-count">0</span>)</button>
-    <button class="emp-tab-btn" onclick="switchEmpTab('tab-candidates-applied', this)">📬 Applications & Resumes (<span id="emp-apps-count">0</span>)</button>
+  <!-- MEMBERSHIP PACKAGE STATUS BAR -->
+  <div class="membership-tier-bar">
+    <div class="tier-card-badge">
+      <div>
+        🎁 <strong>Active Membership Package:</strong> <span id="tier-name-display" style="color:#0284c7; font-weight:800;">Free Enterprise Tier</span> (5 Active Free Job Postings Included)
+      </div>
+      <div id="auth-status-indicator">
+        <span style="color:#b45309; font-weight:700;">⚠️ Registration / Mail Activation Required to Post Jobs</span>
+      </div>
+    </div>
   </div>
 
-  <div class="emp-content">
-    
-    <!-- Tab 1: Post Job -->
-    <div class="tab-section active" id="tab-post-job">
-      <div class="modal-box" style="max-width:800px; margin:0 auto; box-shadow:var(--shadow-card);">
-        <h2 style="font-size:1.4rem; color:var(--naukri-navy); margin-bottom:0.25rem;">Create a New Job Listing</h2>
-        <p style="color:#64748b; font-size:0.9rem; margin-bottom:1.5rem;">Your posting will appear instantly on the live TooManyJobs candidate search feed.</p>
+  <!-- WORKSPACE -->
+  <div class="emp-container">
+    <div class="tabs-row">
+      <button class="tab-btn active" onclick="switchTab('tab-post', this)">📢 Post a Job Opening</button>
+      <button class="tab-btn" onclick="switchTab('tab-openings', this)">📋 Manage Openings (<span id="jobs-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('tab-resumes', this)">📬 Applications Received (<span id="apps-count">0</span>)</button>
+    </div>
 
-        <form id="employer-post-form" onsubmit="handleRecruiterPostJob(event)">
+    <!-- TAB 1: POST JOB -->
+    <div class="tab-panel active" id="tab-post">
+      <div class="form-card">
+        <h2 style="font-size:1.35rem; color:var(--brand-navy); margin-bottom:0.25rem;">Create New Job Listing</h2>
+        <p style="color:#64748b; font-size:0.88rem; margin-bottom:1.5rem;">Your posting will appear instantly on the live candidate search feed.</p>
+
+        <form onsubmit="handleJobCreate(event)">
           <div class="form-group">
-            <label>Job Designation / Role Title *</label>
-            <input type="text" id="post-role" required placeholder="e.g. Lead SRE & Multi-Cloud Infrastructure" />
+            <label>Job Title / Designation *</label>
+            <input type="text" id="job-title" required placeholder="e.g. Senior Capacity & Performance Manager" />
           </div>
-
           <div class="form-row">
             <div class="form-group">
-              <label>Company / Enterprise *</label>
-              <input type="text" id="post-company-name" required placeholder="e.g. Cognizant / IBM / TechCorp" />
+              <label>Company *</label>
+              <input type="text" id="job-company" required placeholder="e.g. Cognizant / IBM / TechCorp" />
             </div>
             <div class="form-group">
-              <label>Job Location *</label>
-              <input type="text" id="post-location-name" required placeholder="e.g. Hyderabad / Bengaluru / Remote" />
+              <label>Location *</label>
+              <input type="text" id="job-location" required placeholder="e.g. Hyderabad / Remote" />
             </div>
           </div>
-
           <div class="form-row">
             <div class="form-group">
               <label>Experience Required *</label>
-              <select id="post-exp-select">
+              <select id="job-exp">
                 <option value="Fresher">Fresher (0 - 1 Yrs)</option>
                 <option value="1-3 Yrs">1 - 3 Yrs</option>
-                <option value="4-8 Yrs" selected>4 - 8 Yrs</option>
-                <option value="8-12 Yrs">8 - 12 Yrs (Senior / Lead)</option>
+                <option value="4-8 Yrs">4 - 8 Yrs</option>
+                <option value="8-12 Yrs" selected>8 - 12 Yrs (Senior / Lead)</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Annual Salary / CTC Package *</label>
-              <input type="text" id="post-ctc-package" required placeholder="e.g. 20 - 32 Lacs PA" />
+              <label>CTC Package *</label>
+              <input type="text" id="job-ctc" required placeholder="e.g. 28 - 36 Lacs PA" />
             </div>
           </div>
-
           <div class="form-row">
             <div class="form-group">
-              <label>Department / Category</label>
-              <select id="post-dept-category">
-                <option value="IT / Data Science">AI & Data Science</option>
-                <option value="Cloud / DevOps">Cloud & DevOps / SRE</option>
-                <option value="Software / Engineering">Software Engineering</option>
+              <label>Domain / Category</label>
+              <select id="job-dept">
+                <option value="AI / Data Science">AI & Data Science</option>
+                <option value="Cloud / DevOps">Cloud Infrastructure & SRE</option>
+                <option value="Software">Software Engineering</option>
               </select>
             </div>
             <div class="form-group">
               <label>Work Mode</label>
-              <select id="post-work-mode">
+              <select id="job-mode">
                 <option value="Hybrid">Hybrid</option>
                 <option value="Work From Home">Work From Home (Remote)</option>
                 <option value="On-site">On-site / Office</option>
               </select>
             </div>
           </div>
-
           <div class="form-group">
-            <label>Key Skills Required (Comma separated tags) *</label>
-            <input type="text" id="post-skills-tags" required placeholder="Python, SRE, Capacity Management, AWS, Docker" />
+            <label>Skills Required (Comma separated) *</label>
+            <input type="text" id="job-skills" required placeholder="Python, SRE, Capacity Planning, Prometheus, AWS" />
           </div>
-
           <div class="form-group">
             <label>Full Job Description *</label>
-            <textarea id="post-role-desc" rows="4" required placeholder="Describe day-to-day responsibilities, shift details, and minimum qualifications..."></textarea>
+            <textarea id="job-desc" rows="4" required placeholder="Describe day-to-day duties, shift timings, certifications..."></textarea>
           </div>
-
-          <button type="submit" class="btn-modal-submit" style="background:var(--naukri-orange); font-size:1.05rem;">
-            🚀 Publish Job to Live Feed
-          </button>
+          <button type="submit" class="btn-submit-job">Publish Job to Live Feed</button>
         </form>
       </div>
     </div>
 
-    <!-- Tab 2: Manage Openings -->
-    <div class="tab-section" id="tab-manage-postings">
+    <!-- TAB 2: MANAGE OPENINGS -->
+    <div class="tab-panel" id="tab-openings">
       <div class="table-card">
-        <table class="naukri-table">
+        <table class="data-table">
           <thead>
             <tr>
-              <th>Designation & Company</th>
-              <th>Location & Mode</th>
+              <th>Role & Enterprise</th>
+              <th>Location</th>
               <th>Experience</th>
               <th>Salary (CTC)</th>
-              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
-          <tbody id="emp-jobs-tbody">
-            <!-- Injected via JS -->
-          </tbody>
+          <tbody id="openings-tbody"></tbody>
         </table>
       </div>
     </div>
 
-    <!-- Tab 3: Applications & Resumes -->
-    <div class="tab-section" id="tab-candidates-applied">
+    <!-- TAB 3: APPLICATIONS RECEIVED -->
+    <div class="tab-panel" id="tab-resumes">
       <div class="table-card">
-        <table class="naukri-table">
+        <table class="data-table">
           <thead>
             <tr>
-              <th>Applicant Details</th>
-              <th>Applied Position</th>
+              <th>Applicant Contact</th>
+              <th>Role Applied</th>
               <th>Experience & CTC</th>
-              <th>Resume Document</th>
-              <th>Date Applied</th>
+              <th>Resume</th>
+              <th>Date</th>
             </tr>
           </thead>
-          <tbody id="emp-apps-tbody">
-            <!-- Injected via JS -->
-          </tbody>
+          <tbody id="apps-tbody"></tbody>
         </table>
       </div>
     </div>
-
   </div>
 
-  <script src="config.js"></script>
-  <script src="js/portal-engine.js"></script>
+  <!-- EMPLOYER REGISTRATION & MAIL ACTIVATION MODAL -->
+  <div class="modal-backdrop" id="emp-auth-modal">
+    <div class="modal-surface">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <h3 style="color:var(--brand-navy);">Employer Registration & Mail Activation</h3>
+        <button onclick="closeEmployerAuthModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+      </div>
+
+      <!-- Step 1: Register Form -->
+      <div id="auth-step-1">
+        <p style="font-size:0.88rem; color:#64748b; margin-bottom:1.2rem;">
+          Register your corporate profile to activate your <strong>Free Enterprise Membership Package</strong>.
+        </p>
+        <form onsubmit="handleEmployerRegisterSubmit(event)">
+          <div class="form-group">
+            <label>Company / Enterprise Name *</label>
+            <input type="text" id="emp-reg-comp" required placeholder="e.g. Bluestone Consultancy" />
+          </div>
+          <div class="form-group">
+            <label>Official HR / Recruiter Email *</label>
+            <input type="email" id="emp-reg-email" required placeholder="hr@company.com" />
+          </div>
+          <div class="form-group">
+            <label>Contact Number *</label>
+            <input type="tel" id="emp-reg-phone" required placeholder="9618706066" />
+          </div>
+          <button type="submit" class="btn-submit-job" style="margin-top:0.5rem;">Register & Send Mail Activation</button>
+        </form>
+      </div>
+
+      <!-- Step 2: Mail Activation Simulated Box -->
+      <div id="auth-step-2" style="display:none; text-align:center; padding:1rem 0;">
+        <div style="font-size:3rem; margin-bottom:0.5rem;">✉️</div>
+        <h3 style="color:var(--brand-navy); margin-bottom:0.5rem;">Activation Mail Sent!</h3>
+        <p style="font-size:0.9rem; color:#64748b; margin-bottom:1.5rem;">
+          We have sent an activation link to <strong id="sent-email-target">hr@company.com</strong>. Click below to simulate activating your account and joining TooManyJobs.
+        </p>
+        <button onclick="simulateMailActivation()" style="background:#16a34a; color:#fff; border:none; padding:0.75rem 1.5rem; border-radius:999px; font-weight:700; cursor:pointer; font-size:1rem; width:100%;">
+          ✓ Click to Activate Mail & Join Free Package
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    const STORAGE_KEY_JOBS = 'TMJ_JOBS_STORE_V4';
+    const STORAGE_KEY_APPS = 'TMJ_APPS_STORE_V4';
+    const STORAGE_KEY_EMP_AUTH = 'TMJ_EMP_LOGGED_IN_V1';
+
+    let currentEmployer = null;
+
     document.addEventListener("DOMContentLoaded", () => {
-      loadEmployerWorkspace();
+      const savedEmp = localStorage.getItem(STORAGE_KEY_EMP_AUTH);
+      if (savedEmp) {
+        currentEmployer = JSON.parse(savedEmp);
+        updateEmployerAuthUI();
+      }
+      refreshData();
     });
 
-    function switchEmpTab(tabId, btn) {
-      document.querySelectorAll(".tab-section").forEach(s => s.classList.remove("active"));
-      document.querySelectorAll(".emp-tab-btn").forEach(b => b.classList.remove("active"));
-      document.getElementById(tabId).classList.add("active");
+    function switchTab(panelId, btn) {
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(panelId).classList.add("active");
       btn.classList.add("active");
     }
 
-    function loadEmployerWorkspace() {
-      const jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
-      const apps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
+    function refreshData() {
+      const jobs = JSON.parse(localStorage.getItem(STORAGE_KEY_JOBS) || "[]");
+      const apps = JSON.parse(localStorage.getItem(STORAGE_KEY_APPS) || "[]");
 
-      document.getElementById("emp-jobs-count").innerText = jobs.length;
-      document.getElementById("emp-apps-count").innerText = apps.length;
+      document.getElementById("jobs-count").innerText = jobs.length;
+      document.getElementById("apps-count").innerText = apps.length;
 
-      // Render jobs table
-      const jBody = document.getElementById("emp-jobs-tbody");
+      const oBody = document.getElementById("openings-tbody");
       if (jobs.length === 0) {
-        jBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2.5rem;">No active openings posted yet.</td></tr>`;
+        oBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem;">No jobs posted yet.</td></tr>`;
       } else {
-        jBody.innerHTML = jobs.map(j => `
+        oBody.innerHTML = jobs.map(j => `
           <tr>
-            <td>
-              <strong>${j.title}</strong><br>
-              <small style="color:#64748b;">${j.company}</small>
-            </td>
-            <td>${j.location}<br><small style="color:#2563eb;">${j.workMode || 'Hybrid'}</small></td>
+            <td><strong>${j.title}</strong><br><small style="color:#64748b;">${j.company}</small></td>
+            <td>${j.location}<br><small style="color:#185adb;">${j.workMode || 'Hybrid'}</small></td>
             <td>${j.experience}</td>
             <td style="font-weight:700; color:#15803d;">${j.salary}</td>
-            <td><span class="status-badge">Active</span></td>
-            <td><button class="btn-table-action" onclick="removeJobPosting('${j.id}')">Delete</button></td>
+            <td><button class="btn-del" onclick="deleteJob('${j.id}')">Delete</button></td>
           </tr>
         `).join("");
       }
 
-      // Render apps table
-      const aBody = document.getElementById("emp-apps-tbody");
+      const aBody = document.getElementById("apps-tbody");
       if (apps.length === 0) {
-        aBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:2.5rem;">No candidate resumes received yet.</td></tr>`;
+        aBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:2rem;">No candidate resumes received yet.</td></tr>`;
       } else {
         aBody.innerHTML = apps.map(a => `
           <tr>
-            <td>
-              <strong>${a.applicantName}</strong><br>
-              <small>${a.email} • ${a.phone}</small>
-            </td>
+            <td><strong>${a.applicantName}</strong><br><small>${a.email} • ${a.phone}</small></td>
             <td><strong>${a.jobTitle}</strong><br><small style="color:#64748b;">${a.company}</small></td>
             <td>${a.exp}<br><small style="color:#15803d;">${a.ctc}</small></td>
-            <td><a href="${a.resumeUrl}" target="_blank" style="color:#2563eb; font-weight:700; text-decoration:none;">Download CV ↗</a></td>
+            <td><a href="${a.resumeUrl}" target="_blank" style="color:#185adb; font-weight:700;">View Resume ↗</a></td>
             <td>${a.appliedDate}</td>
           </tr>
         `).join("");
       }
     }
 
-    function handleRecruiterPostJob(e) {
+    /* EMPLOYER AUTH & MAIL ACTIVATION FLOW */
+    function openEmployerAuthModal() {
+      document.getElementById("auth-step-1").style.display = "block";
+      document.getElementById("auth-step-2").style.display = "none";
+      document.getElementById("emp-auth-modal").classList.add("active");
+    }
+    function closeEmployerAuthModal() {
+      document.getElementById("emp-auth-modal").classList.remove("active");
+    }
+
+    let tempEmpData = null;
+    function handleEmployerRegisterSubmit(e) {
       e.preventDefault();
-      const newJob = {
-        id: "nj-" + Date.now(),
-        title: document.getElementById("post-role").value,
-        company: document.getElementById("post-company-name").value,
-        location: document.getElementById("post-location-name").value,
-        experience: document.getElementById("post-exp-select").value,
-        salary: document.getElementById("post-ctc-package").value,
-        category: document.getElementById("post-dept-category").value,
-        workMode: document.getElementById("post-work-mode").value,
-        skills: document.getElementById("post-skills-tags").value.split(",").map(s => s.trim()),
-        snippet: document.getElementById("post-role-desc").value,
-        postedBy: "recruiter@toomanyjobs.com",
-        date: "Just Now"
+      tempEmpData = {
+        company: document.getElementById("emp-reg-comp").value,
+        email: document.getElementById("emp-reg-email").value,
+        phone: document.getElementById("emp-reg-phone").value
       };
 
-      const jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
+      document.getElementById("sent-email-target").innerText = tempEmpData.email;
+      document.getElementById("auth-step-1").style.display = "none";
+      document.getElementById("auth-step-2").style.display = "block";
+    }
+
+    function simulateMailActivation() {
+      currentEmployer = tempEmpData;
+      localStorage.setItem(STORAGE_KEY_EMP_AUTH, JSON.stringify(currentEmployer));
+      closeEmployerAuthModal();
+      updateEmployerAuthUI();
+      alert("🎉 Email Activated Successfully! You have joined the Free Enterprise Membership Tier and can now post jobs.");
+    }
+
+    function handleEmployerLogout() {
+      currentEmployer = null;
+      localStorage.removeItem(STORAGE_KEY_EMP_AUTH);
+      updateEmployerAuthUI();
+      alert("Employer signed out successfully.");
+    }
+
+    function updateEmployerAuthUI() {
+      const indicator = document.getElementById("auth-status-indicator");
+      const btn = document.getElementById("header-auth-action");
+
+      if (currentEmployer) {
+        indicator.innerHTML = `<span style="color:#15803d; font-weight:700;">✓ Mail Verified & Active (${currentEmployer.company})</span>`;
+        btn.innerText = "Sign Out (" + currentEmployer.company.split(' ')[0] + ")";
+        btn.onclick = handleEmployerLogout;
+        document.getElementById("job-company").value = currentEmployer.company;
+      } else {
+        indicator.innerHTML = `<span style="color:#b45309; font-weight:700;">⚠️ Registration / Mail Activation Required to Post Jobs</span>`;
+        btn.innerText = "Employer Login";
+        btn.onclick = openEmployerAuthModal;
+      }
+    }
+
+    /* JOB POSTING GATE */
+    function handleJobCreate(e) {
+      e.preventDefault();
+      if (!currentEmployer) {
+        alert("⚠️ Access Restricted: You must register and activate your email before publishing job openings!");
+        openEmployerAuthModal();
+        return;
+      }
+
+      const newJob = {
+        id: "tmj-" + Date.now(),
+        title: document.getElementById("job-title").value,
+        company: document.getElementById("job-company").value || currentEmployer.company,
+        location: document.getElementById("job-location").value,
+        experience: document.getElementById("job-exp").value,
+        salary: document.getElementById("job-ctc").value,
+        category: document.getElementById("job-dept").value,
+        workMode: document.getElementById("job-mode").value,
+        skills: document.getElementById("job-skills").value.split(",").map(s => s.trim()),
+        snippet: document.getElementById("job-desc").value
+      };
+
+      const jobs = JSON.parse(localStorage.getItem(STORAGE_KEY_JOBS) || "[]");
       jobs.unshift(newJob);
-      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
+      localStorage.setItem(STORAGE_KEY_JOBS, JSON.stringify(jobs));
 
-      alert("🎉 Opening published live to TooManyJobs candidate search feed!");
+      alert("🎉 Opening published live to TooManyJobs.com under your Free Enterprise Package!");
       e.target.reset();
-      loadEmployerWorkspace();
-      switchEmpTab('tab-manage-postings', document.querySelectorAll(".emp-tab-btn")[1]);
+      refreshData();
+      switchTab('tab-openings', document.querySelectorAll(".tab-btn")[1]);
     }
 
-    function removeJobPosting(id) {
+    function deleteJob(id) {
       if (!confirm("Are you sure you want to remove this opening?")) return;
-      let jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
+      let jobs = JSON.parse(localStorage.getItem(STORAGE_KEY_JOBS) || "[]");
       jobs = jobs.filter(j => j.id !== id);
-      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
-      loadEmployerWorkspace();
-    }
-
-    function openRecruiterLogin() {
-      alert("Recruiter Verified! Signed in under Corporate Hiring Suite.");
+      localStorage.setItem(STORAGE_KEY_JOBS, JSON.stringify(jobs));
+      refreshData();
     }
   </script>
 </body>
