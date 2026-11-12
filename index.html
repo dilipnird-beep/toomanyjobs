@@ -3,172 +3,279 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TooManyJobs.com | Find Your Next Career Move</title>
+  <title>TooManyJobs.com | India's Premier Career & Tech Hiring Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --naukri-navy: #183b74;
-      --naukri-blue: #4a90e2;
-      --naukri-blue-hover: #1e3a8a;
-      --naukri-orange: #ff7555;
-      --naukri-orange-hover: #e05b3b;
-      --bg-canvas: #f4f6fa;
-      --bg-white: #ffffff;
-      --text-dark: #1e293b;
+      --naukri-navy: #0a2540;
+      --naukri-blue: #185adb;
+      --naukri-blue-hover: #0c42a6;
+      --naukri-orange: #ff6b35;
+      --naukri-orange-hover: #e8551f;
+      --bg-page: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
       --text-muted: #64748b;
-      --border-light: #e2e8f0;
+      --border-color: #e2e8f0;
+      --border-focus: #3b82f6;
       --tag-bg: #f1f5f9;
+      --pill-active-bg: #0a2540;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 16px rgba(10,37,64,0.08);
+      --shadow-lg: 0 14px 34px rgba(10,37,64,0.12);
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
       --radius-pill: 999px;
-      --radius-card: 14px;
-      --radius-input: 8px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-      --shadow-card: 0 4px 14px rgba(24, 59, 116, 0.08);
-      --shadow-lg: 0 12px 30px rgba(0,0,0,0.12);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg-canvas); color: var(--text-dark); line-height: 1.5; }
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+    }
 
-    /* Header */
-    .naukri-header {
-      background: var(--bg-white);
-      border-bottom: 1px solid var(--border-light);
+    /* TOP HEADER */
+    .tmj-header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
       position: sticky;
       top: 0;
       z-index: 1000;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
-    .naukri-nav-inner {
+    .header-inner {
       max-width: 1280px;
       margin: 0 auto;
-      padding: 0.85rem 1.5rem;
+      padding: 0.75rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 1.5rem;
+      flex-wrap: wrap;
     }
-    .naukri-brand {
+
+    /* LOGO BRANDING */
+    .brand-logo-wrap {
       display: flex;
       align-items: center;
-      gap: 0.65rem;
+      gap: 0.75rem;
       text-decoration: none;
-      font-weight: 800;
-      font-size: 1.45rem;
-      color: var(--naukri-navy);
     }
-    .brand-pill {
-      background: var(--naukri-orange);
-      color: #fff;
-      font-size: 0.75rem;
-      padding: 0.15rem 0.5rem;
-      border-radius: var(--radius-pill);
+    .brand-svg-icon {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+    .brand-text-col {
+      display: flex;
+      flex-direction: column;
+    }
+    .brand-main-name {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--naukri-navy);
+      line-height: 1.1;
+    }
+    .brand-main-name .brand-accent {
+      color: var(--naukri-orange);
+    }
+    .brand-tagline {
+      font-size: 0.72rem;
       font-weight: 700;
+      letter-spacing: 0.8px;
+      color: var(--naukri-blue);
       text-transform: uppercase;
     }
-    .brand-title span { color: var(--naukri-orange); }
 
-    .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
-    .btn-login-outline {
-      background: transparent;
-      border: 1px solid var(--naukri-blue);
-      color: var(--naukri-blue);
-      padding: 0.5rem 1.25rem;
-      border-radius: var(--radius-pill);
-      font-weight: 700;
-      font-size: 0.88rem;
-      cursor: pointer;
-    }
-    .btn-login-outline:hover { background: var(--naukri-blue); color: #fff; }
-
-    .btn-employer-solid {
-      background: var(--naukri-orange);
-      color: #fff;
-      border: none;
-      padding: 0.55rem 1.25rem;
-      border-radius: var(--radius-pill);
-      font-weight: 700;
-      font-size: 0.88rem;
-      cursor: pointer;
-    }
-    .btn-employer-solid:hover { background: var(--naukri-orange-hover); }
-
-    /* Hero & Search */
-    .naukri-hero {
-      background: linear-gradient(180deg, #eaf2fc 0%, #f4f6fa 100%);
-      padding: 3.5rem 1.5rem 2.5rem;
-      text-align: center;
-    }
-    .naukri-hero h1 { font-size: 2.3rem; font-weight: 800; color: var(--naukri-navy); margin-bottom: 0.5rem; }
-    .naukri-hero p { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 2rem; }
-
-    .naukri-search-capsule {
-      max-width: 1060px;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: var(--radius-pill);
-      box-shadow: 0 10px 30px rgba(24, 59, 116, 0.12);
+    /* NAV MENU & ACTIONS */
+    .nav-links {
       display: flex;
       align-items: center;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #d0dff3;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 1.5rem;
     }
-    .capsule-col {
+    .nav-link {
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--naukri-blue); }
+
+    .header-auth-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-candidate-login {
+      background: transparent;
+      border: 1.5px solid var(--naukri-blue);
+      color: var(--naukri-blue);
+      padding: 0.45rem 1.25rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .btn-candidate-login:hover {
+      background: var(--naukri-blue);
+      color: #ffffff;
+    }
+
+    .btn-employer-portal {
+      background: var(--naukri-orange);
+      color: #ffffff;
+      border: none;
+      padding: 0.5rem 1.35rem;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-employer-portal:hover {
+      background: var(--naukri-orange-hover);
+      transform: translateY(-1px);
+    }
+
+    /* HERO SECTION */
+    .hero-banner {
+      background: linear-gradient(180deg, #eaf2ff 0%, #f8fafc 100%);
+      padding: 3.5rem 1.5rem 2.75rem;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #dbeafe;
+      color: var(--naukri-blue);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 0.3rem 0.85rem;
+      border-radius: var(--radius-pill);
+      margin-bottom: 0.85rem;
+    }
+    .hero-title {
+      font-size: 2.35rem;
+      font-weight: 800;
+      color: var(--naukri-navy);
+      letter-spacing: -0.6px;
+      margin-bottom: 0.5rem;
+    }
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 2rem;
+    }
+
+    /* NAUKRI CAPSULE SEARCH */
+    .search-capsule {
+      max-width: 1040px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 12px 36px rgba(10,37,64,0.12);
+      border: 1.5px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      padding: 0.45rem 0.65rem;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .capsule-segment {
       flex: 1;
       min-width: 220px;
       display: flex;
       align-items: center;
       gap: 0.65rem;
-      padding: 0.5rem 1rem;
-      border-right: 1px solid var(--border-light);
+      padding: 0.6rem 1rem;
+      border-right: 1px solid var(--border-color);
     }
-    .capsule-col:last-of-type { border-right: none; }
-    .capsule-col input, .capsule-col select {
+    .capsule-segment:last-of-type { border-right: none; }
+    .capsule-segment input, .capsule-segment select {
       width: 100%;
       border: none;
       outline: none;
       font-size: 0.95rem;
+      font-family: inherit;
       background: transparent;
+      color: var(--text-main);
     }
-    .btn-capsule-search {
+    .btn-search-exec {
       background: var(--naukri-blue);
-      color: #fff;
+      color: #ffffff;
       border: none;
-      padding: 0.85rem 2.5rem;
+      padding: 0.85rem 2.4rem;
       border-radius: var(--radius-pill);
       font-weight: 700;
       font-size: 1rem;
       cursor: pointer;
+      transition: background 0.2s;
     }
-    .btn-capsule-search:hover { background: var(--naukri-blue-hover); }
+    .btn-search-exec:hover { background: var(--naukri-blue-hover); }
 
-    .naukri-trending-pills {
-      margin-top: 1.5rem;
+    /* TRENDING PILLS */
+    .trending-pills {
+      margin-top: 1.6rem;
       display: flex;
       justify-content: center;
-      gap: 0.5rem;
+      align-items: center;
+      gap: 0.55rem;
       flex-wrap: wrap;
     }
-    .naukri-pill {
-      background: #fff;
-      border: 1px solid var(--border-light);
-      padding: 0.35rem 0.95rem;
+    .pills-label { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); }
+    .tmj-pill {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      padding: 0.4rem 1rem;
       border-radius: var(--radius-pill);
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
+      transition: all 0.2s;
     }
-    .naukri-pill.active, .naukri-pill:hover {
-      background: var(--naukri-navy);
-      color: #fff;
-      border-color: var(--naukri-navy);
+    .tmj-pill.active, .tmj-pill:hover {
+      background: var(--pill-active-bg);
+      color: #ffffff;
+      border-color: var(--pill-active-bg);
     }
 
-    /* Layout */
-    .portal-layout {
+    /* CANDIDATE LOGGED IN BANNER */
+    .candidate-active-strip {
+      background: linear-gradient(90deg, #ecfeff 0%, #eff6ff 100%);
+      border: 1.5px solid #bfdbfe;
+      color: #0369a1;
+      padding: 0.85rem 1.25rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* PORTAL TWO-COLUMN LAYOUT */
+    .portal-container {
       max-width: 1280px;
       margin: 2rem auto;
       padding: 0 1.5rem 5rem;
@@ -176,37 +283,124 @@
       grid-template-columns: 280px 1fr;
       gap: 2rem;
     }
-    @media (max-width: 900px) { .portal-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 900px) {
+      .portal-container { grid-template-columns: 1fr; }
+    }
 
-    .naukri-sidebar {
-      background: #fff;
+    /* LEFT SIDEBAR FILTERS */
+    .filter-sidebar {
+      background: #ffffff;
       border-radius: var(--radius-card);
       padding: 1.5rem;
-      border: 1px solid var(--border-light);
+      border: 1px solid var(--border-color);
       height: fit-content;
+      box-shadow: var(--shadow-sm);
     }
-    .filter-group { margin-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 1.25rem; }
-    .filter-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .filter-group h4 { font-size: 0.92rem; font-weight: 700; color: var(--naukri-navy); margin-bottom: 0.75rem; }
-    .filter-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.88rem; color: var(--text-muted); cursor: pointer; }
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+    }
+    .filter-header h3 { font-size: 1.1rem; font-weight: 800; color: var(--naukri-navy); }
+    .btn-filter-reset {
+      background: none;
+      border: none;
+      color: var(--naukri-blue);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
 
-    /* Cards */
-    .job-feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-    .job-feed-header h2 { font-size: 1.25rem; font-weight: 800; color: var(--naukri-navy); }
-    .job-feed-list { display: flex; flex-direction: column; gap: 1.1rem; }
+    .filter-block {
+      margin-bottom: 1.4rem;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 1.25rem;
+    }
+    .filter-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .filter-block h4 { font-size: 0.9rem; font-weight: 700; color: var(--naukri-navy); margin-bottom: 0.65rem; }
+    .filter-opt {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 0.45rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .filter-opt input { accent-color: var(--naukri-blue); width: 16px; height: 16px; }
 
-    .naukri-job-card {
-      background: #fff;
-      border: 1px solid var(--border-light);
+    /* JOB FEED AREA */
+    .feed-stats-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    .feed-stats-bar h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--naukri-navy);
+    }
+    .jobs-flow-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    /* NAUKRI JOB CARD */
+    .naukri-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
       border-radius: var(--radius-card);
       padding: 1.5rem;
       box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
-    .job-role { font-size: 1.15rem; font-weight: 700; color: var(--naukri-navy); margin-bottom: 0.2rem; }
-    .job-company { font-size: 0.92rem; font-weight: 600; color: #475569; display: flex; align-items: center; gap: 0.5rem; }
+    .naukri-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: #93c5fd;
+    }
 
-    .naukri-3pillar {
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .job-title-text {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--naukri-navy);
+      margin-bottom: 0.25rem;
+    }
+    .company-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+    }
+    .company-star {
+      color: #f59e0b;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .badge-mode {
+      background: #eff6ff;
+      color: var(--naukri-blue);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+    }
+
+    /* 3-PILLAR STATS ROW */
+    .stats-3pillar-row {
       display: flex;
       align-items: center;
       gap: 1.75rem;
@@ -215,289 +409,457 @@
       color: #475569;
       flex-wrap: wrap;
     }
-    .pillar-item { display: flex; align-items: center; gap: 0.4rem; }
+    .stat-pillar {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .stat-pillar strong { color: #1e293b; }
 
-    .job-desc-snippet { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .job-description-box {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.55;
+    }
 
-    .naukri-skill-tags { display: flex; gap: 0.45rem; flex-wrap: wrap; margin-bottom: 1rem; }
-    .naukri-skill-badge {
+    /* SKILL BADGES */
+    .skills-cluster {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .skill-chip {
       background: var(--tag-bg);
       color: #334155;
       font-size: 0.78rem;
       font-weight: 600;
-      padding: 0.25rem 0.65rem;
+      padding: 0.25rem 0.7rem;
       border-radius: var(--radius-pill);
+      border: 1px solid #e2e8f0;
     }
 
-    .card-bottom {
+    .card-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px dashed var(--border-light);
-      padding-top: 0.85rem;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 0.9rem;
       font-size: 0.82rem;
       color: var(--text-muted);
     }
-    .btn-naukri-apply {
+    .btn-card-apply {
       background: var(--naukri-blue);
-      color: #fff;
+      color: #ffffff;
       border: none;
       font-weight: 700;
-      padding: 0.5rem 1.5rem;
+      padding: 0.55rem 1.6rem;
       border-radius: var(--radius-pill);
       cursor: pointer;
+      font-size: 0.88rem;
+      transition: background 0.2s;
     }
-    .btn-naukri-apply:hover { background: var(--naukri-navy); }
+    .btn-card-apply:hover { background: var(--naukri-blue-hover); }
 
-    /* Modals */
-    .modal-overlay {
+    /* MODAL WINDOWS */
+    .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(10,37,64,0.65);
+      backdrop-filter: blur(4px);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 2000;
-      padding: 1rem;
+      padding: 1.25rem;
     }
-    .modal-overlay.active { display: flex; }
-    .modal-box {
-      background: #fff;
+    .modal-backdrop.active { display: flex; }
+    .modal-surface {
+      background: #ffffff;
       border-radius: var(--radius-card);
       max-width: 580px;
       width: 100%;
-      padding: 2rem;
+      padding: 2.2rem;
       max-height: 90vh;
       overflow-y: auto;
+      box-shadow: var(--shadow-lg);
     }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
-    .btn-close-modal { background: none; border: none; font-size: 1.7rem; cursor: pointer; color: #94a3b8; }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 0.35rem; }
-    .form-group input, .form-group textarea, .form-group select {
+    .modal-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+    .modal-close-cross {
+      background: none;
+      border: none;
+      font-size: 1.75rem;
+      cursor: pointer;
+      color: #94a3b8;
+      line-height: 1;
+    }
+
+    /* FORM STYLES */
+    .form-field { margin-bottom: 1.1rem; }
+    .form-field label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      color: var(--naukri-navy);
+    }
+    .form-field input, .form-field select, .form-field textarea {
       width: 100%;
-      padding: 0.65rem 0.85rem;
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-input);
+      padding: 0.7rem 0.9rem;
+      border: 1.5px solid var(--border-color);
+      border-radius: var(--radius-sm);
       font-family: inherit;
       font-size: 0.92rem;
+      transition: border-color 0.2s;
     }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-    .btn-modal-submit {
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+    .form-row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+
+    .btn-modal-action {
       width: 100%;
       padding: 0.85rem;
       background: var(--naukri-blue);
-      color: #fff;
+      color: #ffffff;
       border: none;
       border-radius: var(--radius-pill);
       font-weight: 700;
+      font-size: 0.95rem;
       cursor: pointer;
+      transition: background 0.2s;
     }
+    .btn-modal-action:hover { background: var(--naukri-blue-hover); }
 
-    .resume-upload-card {
-      border: 2px dashed #93c5fd;
+    /* RESUME DRAG-AND-DROP CARD */
+    .resume-drop-card {
+      border: 2px dashed #60a5fa;
       background: #eff6ff;
-      padding: 1.5rem;
+      padding: 1.75rem 1rem;
       text-align: center;
       border-radius: var(--radius-card);
       cursor: pointer;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
       display: block;
+      transition: all 0.2s;
+    }
+    .resume-drop-card:hover {
+      background: #dbeafe;
+      border-color: var(--naukri-blue);
+    }
+
+    /* FOOTER */
+    .tmj-footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-muted);
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="naukri-header">
-    <div class="naukri-nav-inner">
-      <a href="index.html" class="naukri-brand">
-        <span class="brand-pill">TMJ</span>
-        <span class="brand-title">TooMany<span>Jobs</span></span>
+  <!-- HEADER -->
+  <header class="tmj-header">
+    <div class="header-inner">
+      <!-- CUSTOM TOO MANY JOBS LOGO -->
+      <a href="index.html" class="brand-logo-wrap">
+        <svg class="brand-svg-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="100" height="100" rx="22" fill="#0A2540" />
+          <path d="M22 68V32H40C46.6 32 50 35.4 50 42C50 48.6 46.6 52 40 52H32V68H22Z" fill="#FFFFFF"/>
+          <path d="M50 68V42C50 35.4 53.4 32 60 32C66.6 32 70 35.4 70 42V68H60V44C60 41.8 58.8 40.6 56 40.6C53.2 40.6 52 41.8 52 44V68H50Z" fill="#FF6B35"/>
+          <circle cx="76" cy="34" r="5" fill="#38BDF8"/>
+        </svg>
+        <div class="brand-text-col">
+          <div class="brand-main-name">TooMany<span class="brand-accent">Jobs</span>.com</div>
+          <div class="brand-tagline">Careers • AI • Tech • SRE</div>
+        </div>
       </a>
 
-      <div class="nav-actions">
-        <button class="btn-login-outline" onclick="openCandidateAuthModal()">Jobseeker Login</button>
-        <button class="btn-employer-solid" onclick="openEmployerModal()">Post a Job</button>
+      <!-- NAVIGATION LINKS -->
+      <nav class="nav-links">
+        <a href="#jobs-feed" class="nav-link">Search Jobs</a>
+        <a href="#jobs-feed" class="nav-link">Top Tech Hubs</a>
+        <a href="admin.html" class="nav-link" style="color:#ef4444; font-weight:700;">Admin Gate ↗</a>
+      </nav>
+
+      <!-- AUTH BUTTONS: SEPARATE CANDIDATE & EMPLOYER -->
+      <div class="header-auth-group">
+        <button class="btn-candidate-login" id="cand-head-btn" onclick="openCandidateLoginModal()">
+          <span>👤</span> <span id="cand-btn-label">Candidate Login</span>
+        </button>
+        <a href="employer.html" class="btn-employer-portal">
+          <span>🏢</span> <span>Employer / Recruiter Hub ↗</span>
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="naukri-hero">
-    <h1>Find Your Dream Job Across India & Global Remote</h1>
-    <p>50,000+ Verified openings across IT, AI Ops, Cloud Infrastructure, and Product Engineering</p>
+  <!-- HERO SECTION -->
+  <section class="hero-banner">
+    <div class="hero-badge">⚡ 50,000+ Active Roles Across India & Global Remote</div>
+    <h1 class="hero-title">Find Your Next Big Career Move</h1>
+    <p class="hero-subtitle">Direct, verified openings across AI Ops, Site Reliability Engineering, Multi-Cloud & Full Stack Architecture</p>
 
-    <div class="naukri-search-capsule">
-      <div class="capsule-col">
-        <span>🔍</span>
-        <input type="text" id="search-keyword" placeholder="Enter skills / designations / companies" oninput="executeSearch()" />
+    <!-- SEARCH CAPSULE -->
+    <div class="search-capsule">
+      <div class="capsule-segment">
+        <span style="font-size:1.1rem;">🔍</span>
+        <input type="text" id="search-keyword" placeholder="Designation, Skills (e.g. Python, SRE, AWS)" oninput="filterJobsList()" />
       </div>
-      <div class="capsule-col">
-        <span>📍</span>
-        <input type="text" id="search-location" placeholder="Enter location (e.g. Hyderabad, Bengaluru)" oninput="executeSearch()" />
+      <div class="capsule-segment">
+        <span style="font-size:1.1rem;">📍</span>
+        <input type="text" id="search-location" placeholder="City (e.g. Hyderabad, Bengaluru, Remote)" oninput="filterJobsList()" />
       </div>
-      <div class="capsule-col">
-        <span>💼</span>
-        <select id="search-experience" onchange="executeSearch()">
-          <option value="">Select experience</option>
+      <div class="capsule-segment">
+        <span style="font-size:1.1rem;">💼</span>
+        <select id="search-experience" onchange="filterJobsList()">
+          <option value="">Select Experience</option>
           <option value="Fresher">Fresher (0 - 1 Yrs)</option>
           <option value="1-3">1 - 3 Yrs</option>
           <option value="4-8">4 - 8 Yrs</option>
-          <option value="8-12">8 - 12 Yrs (Senior / Lead)</option>
+          <option value="8-12">8 - 12 Yrs (Lead / Senior)</option>
         </select>
       </div>
-      <button class="btn-capsule-search" onclick="executeSearch()">Search</button>
+      <button class="btn-search-exec" onclick="filterJobsList()">Search</button>
     </div>
 
-    <div class="naukri-trending-pills">
-      <span style="font-size:0.85rem; font-weight:600; color:#64748b;">Popular Searches:</span>
-      <button class="naukri-pill active" onclick="filterByPill('All', this)">All Jobs</button>
-      <button class="naukri-pill" onclick="filterByPill('IT / Data Science', this)">AI & Prompt Ops</button>
-      <button class="naukri-pill" onclick="filterByPill('Cloud / DevOps', this)">Cloud & SRE</button>
-      <button class="naukri-pill" onclick="filterByPill('Software', this)">Full Stack</button>
-      <button class="naukri-pill" onclick="filterByPill('Work From Home', this)">Remote</button>
+    <!-- TRENDING PILLS -->
+    <div class="trending-pills">
+      <span class="pills-label">Trending Tech:</span>
+      <button class="tmj-pill active" onclick="filterPill('All', this)">All Opportunities</button>
+      <button class="tmj-pill" onclick="filterPill('AI / Data Science', this)">AI Ops & Prompts</button>
+      <button class="tmj-pill" onclick="filterPill('Cloud / DevOps', this)">Cloud SRE</button>
+      <button class="tmj-pill" onclick="filterPill('Software', this)">Full Stack</button>
+      <button class="tmj-pill" onclick="filterPill('Work From Home', this)">Remote</button>
     </div>
   </section>
 
-  <!-- Main Feed & Filters Layout -->
-  <div class="portal-layout">
+  <!-- MAIN FEED & SIDEBAR -->
+  <div class="portal-container" id="jobs-feed">
 
-    <!-- Sidebar Filters -->
-    <aside class="naukri-sidebar">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
-        <h3 style="font-size:1.05rem; font-weight:800; color:var(--naukri-navy);">All Filters</h3>
-        <button onclick="resetFilters()" style="background:none; border:none; color:var(--naukri-blue); font-size:0.82rem; font-weight:700; cursor:pointer;">Reset</button>
+    <!-- LEFT SIDEBAR FILTERS -->
+    <aside class="filter-sidebar">
+      <div class="filter-header">
+        <h3>Filter Openings</h3>
+        <button class="btn-filter-reset" onclick="resetAllFilters()">Reset</button>
       </div>
 
-      <div class="filter-group">
+      <!-- WORK MODE -->
+      <div class="filter-block">
         <h4>Work Mode</h4>
-        <label class="filter-item"><input type="checkbox" class="cb-workmode" value="Work From Home" onchange="executeSearch()" /> Work From Home</label>
-        <label class="filter-item"><input type="checkbox" class="cb-workmode" value="Hybrid" onchange="executeSearch()" /> Hybrid</label>
-        <label class="filter-item"><input type="checkbox" class="cb-workmode" value="On-site" onchange="executeSearch()" /> On-site / Office</label>
+        <label class="filter-opt">
+          <input type="checkbox" class="cb-mode" value="Work From Home" onchange="filterJobsList()" /> Remote / Work From Home
+        </label>
+        <label class="filter-opt">
+          <input type="checkbox" class="cb-mode" value="Hybrid" onchange="filterJobsList()" /> Hybrid
+        </label>
+        <label class="filter-opt">
+          <input type="checkbox" class="cb-mode" value="On-site" onchange="filterJobsList()" /> On-site / Office
+        </label>
       </div>
 
-      <div class="filter-group">
-        <h4>Department / Role</h4>
-        <label class="filter-item"><input type="checkbox" class="cb-dept" value="IT / Data Science" onchange="executeSearch()" /> AI & Data Science</label>
-        <label class="filter-item"><input type="checkbox" class="cb-dept" value="Cloud / DevOps" onchange="executeSearch()" /> Cloud & SRE</label>
-        <label class="filter-item"><input type="checkbox" class="cb-dept" value="Software" onchange="executeSearch()" /> Software Engineering</label>
+      <!-- DOMAINS -->
+      <div class="filter-block">
+        <h4>Domain / Role</h4>
+        <label class="filter-opt">
+          <input type="checkbox" class="cb-dept" value="AI / Data Science" onchange="filterJobsList()" /> AI & Data Operations
+        </label>
+        <label class="filter-opt">
+          <input type="checkbox" class="cb-dept" value="Cloud / DevOps" onchange="filterJobsList()" /> Cloud Infrastructure & SRE
+        </label>
+        <label class="filter-opt">
+          <input type="checkbox" class="cb-dept" value="Software" onchange="filterJobsList()" /> Full Stack Development
+        </label>
+      </div>
+
+      <!-- SALARY BANDS -->
+      <div class="filter-block">
+        <h4>Salary (Lacs PA)</h4>
+        <label class="filter-opt"><input type="checkbox" disabled checked /> 10 - 20 Lacs</label>
+        <label class="filter-opt"><input type="checkbox" disabled checked /> 20 - 35 Lacs</label>
+        <label class="filter-opt"><input type="checkbox" disabled checked /> 35+ Lacs PA</label>
       </div>
     </aside>
 
-    <!-- Job Cards List -->
+    <!-- RIGHT JOB CARDS FEED -->
     <main>
-      <div class="job-feed-header">
-        <h2>1 - <span id="job-feed-count">0</span> of active vacancies</h2>
+      <!-- CANDIDATE LOGGED IN GREETING STRIP -->
+      <div id="cand-status-strip" class="candidate-active-strip" style="display:none;">
+        <div>
+          🎉 <strong>Candidate Profile Active:</strong> <span id="cand-display-name">Dr. Dilip Bathena</span> (1-Click Fast Apply Enabled)
+        </div>
+        <button onclick="handleCandidateLogout()" style="background:#fff; border:1px solid #bae6fd; color:#0369a1; padding:0.35rem 0.85rem; border-radius:999px; font-weight:700; cursor:pointer;">Sign Out</button>
       </div>
-      <div class="job-feed-list" id="naukri-job-list"></div>
+
+      <div class="feed-stats-bar">
+        <h2>Showing <span id="feed-count">0</span> Active Openings</h2>
+        <span style="font-size:0.85rem; color:#64748b;">Sorted by: <strong>Freshness</strong></span>
+      </div>
+
+      <div class="jobs-flow-list" id="jobs-container">
+        <!-- Rendered via JavaScript -->
+      </div>
     </main>
 
   </div>
 
-  <!-- Candidate Modal -->
-  <div class="modal-overlay" id="candidate-auth-modal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 style="color:var(--naukri-navy);">Jobseeker Resume Upload</h3>
-        <button class="btn-close-modal" onclick="closeCandidateAuthModal()">&times;</button>
+  <!-- CANDIDATE LOGIN & RESUME UPLOAD MODAL -->
+  <div class="modal-backdrop" id="cand-login-modal">
+    <div class="modal-surface">
+      <div class="modal-header-row">
+        <div>
+          <h3 style="font-size:1.35rem; color:var(--naukri-navy);">Candidate Login & Registration</h3>
+          <p style="font-size:0.85rem; color:#64748b;">Upload your resume to auto-fill your profile in seconds</p>
+        </div>
+        <button class="modal-close-cross" onclick="closeCandidateLoginModal()">&times;</button>
       </div>
 
-      <label class="resume-upload-card">
-        <input type="file" id="cand-file" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeFile(event)" />
-        <div style="font-size:2.5rem; margin-bottom:0.25rem;">📄</div>
-        <strong style="color:var(--naukri-navy);">Upload Resume (PDF / DOCX)</strong>
-        <p style="font-size:0.8rem; color:#64748b; margin-top:0.25rem;">Auto-extracts your skills, experience, and contact details</p>
+      <!-- RESUME DROP AREA -->
+      <label class="resume-drop-card">
+        <input type="file" id="resume-file" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleResumeParse(event)" />
+        <div style="font-size:2.4rem; margin-bottom:0.25rem;">📄</div>
+        <strong style="color:var(--naukri-navy); font-size:1rem;">Click to Upload Resume (PDF / DOCX)</strong>
+        <p style="font-size:0.82rem; color:#64748b; margin-top:0.2rem;">TooManyJobs parser automatically extracts contact details, experience, and tech skills</p>
       </label>
-      <div id="parse-status-text" style="font-size:0.85rem; color:var(--naukri-blue); font-weight:700; text-align:center; margin-bottom:1rem;"></div>
+      <div id="parse-status-note" style="font-size:0.85rem; color:var(--naukri-blue); font-weight:700; text-align:center; margin-bottom:1rem;"></div>
 
-      <form onsubmit="handleCandidateSave(event)">
-        <div class="form-group">
+      <div style="text-align:center; margin:0.5rem 0 1rem; color:#888; font-size:0.85rem;">— OR SIGN IN WITH GOOGLE —</div>
+
+      <button type="button" onclick="candidateGoogleSignIn()" style="width:100%; padding:0.75rem; background:#fff; border:1px solid #cbd5e1; border-radius:8px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; font-size:0.92rem; margin-bottom:1.5rem;">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        One-Click Sign In with Google
+      </button>
+
+      <!-- CANDIDATE PROFILE FORM -->
+      <form onsubmit="handleCandidateProfileSave(event)">
+        <div class="form-field">
           <label>Full Name *</label>
           <input type="text" id="cand-name" required placeholder="Dr. Dilip Bathena" />
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Email *</label>
+        <div class="form-row-2">
+          <div class="form-field">
+            <label>Email Address *</label>
             <input type="email" id="cand-email" required placeholder="dilip.bath@gmail.com" />
           </div>
-          <div class="form-group">
-            <label>Phone *</label>
+          <div class="form-field">
+            <label>Mobile Number *</label>
             <input type="tel" id="cand-phone" required placeholder="9618706066" />
           </div>
         </div>
-        <div class="form-group">
-          <label>Skills</label>
-          <input type="text" id="cand-skills" placeholder="Python, SRE, Capacity Management, AWS..." />
+        <div class="form-row-2">
+          <div class="form-field">
+            <label>Total Experience *</label>
+            <select id="cand-exp">
+              <option value="Fresher">Fresher (0 - 1 Yrs)</option>
+              <option value="1-3 Yrs">1 - 3 Yrs</option>
+              <option value="4-8 Yrs">4 - 8 Yrs</option>
+              <option value="8-12 Yrs" selected>8 - 12 Yrs (Senior / Lead)</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Expected CTC</label>
+            <input type="text" id="cand-ctc" placeholder="e.g. 36 Lacs PA" />
+          </div>
         </div>
-        <button type="submit" class="btn-modal-submit">Save Profile & Enable 1-Click Apply</button>
+        <div class="form-field">
+          <label>Key Skills (Auto-Extracted)</label>
+          <input type="text" id="cand-skills" placeholder="Python, SRE, Capacity Planning, AWS, LangGraph" />
+        </div>
+        <div class="form-field">
+          <label>Resume Link / File URL</label>
+          <input type="text" id="cand-resume-url" placeholder="https://..." />
+        </div>
+        <button type="submit" class="btn-modal-action">Save Profile & Activate 1-Click Fast Apply</button>
       </form>
     </div>
   </div>
 
-  <!-- Employer Post Modal -->
-  <div class="modal-overlay" id="employer-modal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 style="color:var(--naukri-navy);">Post a New Job Opening</h3>
-        <button class="btn-close-modal" onclick="closeEmployerModal()">&times;</button>
+  <!-- 1-CLICK GUEST APPLY MODAL -->
+  <div class="modal-backdrop" id="guest-apply-modal">
+    <div class="modal-surface">
+      <div class="modal-header-row">
+        <div>
+          <h3 id="modal-job-title" style="color:var(--naukri-navy);">Apply for Position</h3>
+          <p id="modal-job-sub" style="font-size:0.85rem; color:#64748b;">Enterprise details</p>
+        </div>
+        <button class="modal-close-cross" onclick="closeGuestApplyModal()">&times;</button>
       </div>
 
-      <form onsubmit="handlePostJob(event)">
-        <div class="form-group">
-          <label>Job Title *</label>
-          <input type="text" id="post-title" required placeholder="e.g. Senior Capacity & Performance Manager" />
+      <form onsubmit="handleGuestApplySubmit(event)">
+        <input type="hidden" id="modal-job-id" />
+        <div class="form-field">
+          <label>Full Name *</label>
+          <input type="text" id="guest-name" required placeholder="e.g. Dilip Bathena" />
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Company *</label>
-            <input type="text" id="post-company" required placeholder="e.g. Cognizant / IBM" />
+        <div class="form-row-2">
+          <div class="form-field">
+            <label>Email *</label>
+            <input type="email" id="guest-email" required placeholder="name@domain.com" />
           </div>
-          <div class="form-group">
-            <label>Location *</label>
-            <input type="text" id="post-location" required placeholder="e.g. Hyderabad / Remote" />
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Experience Required</label>
-            <input type="text" id="post-exp" required placeholder="e.g. 8-12 Yrs" />
-          </div>
-          <div class="form-group">
-            <label>CTC Package</label>
-            <input type="text" id="post-ctc" required placeholder="e.g. 28 - 36 Lacs PA" />
+          <div class="form-field">
+            <label>Phone *</label>
+            <input type="tel" id="guest-phone" required placeholder="9618706066" />
           </div>
         </div>
-        <div class="form-group">
-          <label>Skills (Comma separated)</label>
-          <input type="text" id="post-skills" required placeholder="Python, SRE, Capacity Planning, Prometheus" />
+        <div class="form-row-2">
+          <div class="form-field">
+            <label>Experience</label>
+            <input type="text" id="guest-exp" required placeholder="e.g. 8 Yrs" />
+          </div>
+          <div class="form-field">
+            <label>Current / Expected CTC</label>
+            <input type="text" id="guest-ctc" required placeholder="e.g. 30 Lacs PA" />
+          </div>
         </div>
-        <div class="form-group">
-          <label>Job Description</label>
-          <textarea id="post-desc" rows="3" required placeholder="Responsibilities and qualifications..."></textarea>
+        <div class="form-field">
+          <label>Resume Link (Google Drive / GitHub / LinkedIn) *</label>
+          <input type="url" id="guest-resume" required placeholder="https://..." />
         </div>
-        <button type="submit" class="btn-modal-submit" style="background:var(--naukri-orange);">Publish Opening Live</button>
+        <button type="submit" class="btn-modal-action">Submit Job Application</button>
       </form>
     </div>
   </div>
 
+  <!-- FOOTER -->
+  <footer class="tmj-footer">
+    <p>&copy; 2026 TooManyJobs.com • India's Leading Tech & Career Platform</p>
+  </footer>
+
   <script>
-    const DEFAULT_JOBS = [
+    const STORAGE_KEY_JOBS = 'TMJ_JOBS_STORE_V4';
+    const STORAGE_KEY_APPS = 'TMJ_APPS_STORE_V4';
+    const STORAGE_KEY_CAND = 'TMJ_CAND_STORE_V4';
+
+    const INITIAL_JOBS = [
       {
-        id: "nj-101",
+        id: "tmj-101",
         title: "Senior Capacity & Performance Manager - AI Ops",
         company: "Cognizant Technology Solutions",
-        location: "Hyderabad",
+        location: "Hyderabad (Financial District)",
         experience: "8-12 Yrs",
         salary: "28 - 38 Lacs PA",
-        category: "IT / Data Science",
+        category: "AI / Data Science",
         workMode: "Hybrid",
-        skills: ["Python", "LangGraph", "Capacity Planning", "Multi-Cloud", "Prometheus", "SRE"],
-        snippet: "Lead multi-cloud capacity management, automated telemetry forecasting, and AI prompt operations across hybrid clusters."
+        skills: ["Python", "LangGraph", "Capacity Planning", "Prometheus", "Multi-Cloud SRE"],
+        snippet: "Lead multi-cloud capacity management, automated telemetry anomaly forecasting, and agentic AI prompt operations across hybrid clusters."
       },
       {
-        id: "nj-102",
-        title: "Site Reliability Engineer (SRE) - Cloud Infrastructure",
+        id: "tmj-102",
+        title: "Site Reliability Engineer (SRE) - Cloud Platforms",
         company: "Kyndryl Global Solutions",
         location: "Hyderabad / Bengaluru",
         experience: "4-8 Yrs",
@@ -505,10 +867,10 @@
         category: "Cloud / DevOps",
         workMode: "Hybrid",
         skills: ["Kubernetes", "AWS", "Terraform", "CI/CD", "Linux", "ITIL"],
-        snippet: "Responsible for cluster availability, automated failover pipelines, SLO/SLA monitoring, and zero-downtime releases."
+        snippet: "Responsible for cluster availability, automated failover pipelines, SLO/SLA monitoring, zero-downtime releases, and incident response."
       },
       {
-        id: "nj-103",
+        id: "tmj-103",
         title: "Lead Full Stack AI Web Developer",
         company: "IBM India Software Labs",
         location: "Hyderabad / Remote",
@@ -521,134 +883,240 @@
       }
     ];
 
-    const JOBS_KEY = 'TMJ_JOBS_STORE_V3';
-    let allJobs = [];
+    let liveJobs = [];
+    let activeCandidate = null;
 
     document.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem(JOBS_KEY);
-      if (saved) {
-        try { allJobs = JSON.parse(saved); } catch(e) { allJobs = [...DEFAULT_JOBS]; }
+      const savedJobs = localStorage.getItem(STORAGE_KEY_JOBS);
+      if (savedJobs) {
+        try { liveJobs = JSON.parse(savedJobs); } catch(e) { liveJobs = [...INITIAL_JOBS]; }
       } else {
-        allJobs = [...DEFAULT_JOBS];
-        localStorage.setItem(JOBS_KEY, JSON.stringify(allJobs));
+        liveJobs = [...INITIAL_JOBS];
+        localStorage.setItem(STORAGE_KEY_JOBS, JSON.stringify(liveJobs));
       }
-      renderJobs(allJobs);
+
+      const savedCand = localStorage.getItem(STORAGE_KEY_CAND);
+      if (savedCand) {
+        activeCandidate = JSON.parse(savedCand);
+        updateCandidateUI();
+      }
+
+      renderJobs(liveJobs);
     });
 
     function renderJobs(jobs) {
-      const container = document.getElementById("naukri-job-list");
-      document.getElementById("job-feed-count").innerText = jobs.length;
+      const container = document.getElementById("jobs-container");
+      document.getElementById("feed-count").innerText = jobs.length;
 
       if (jobs.length === 0) {
-        container.innerHTML = `<div style="background:#fff; padding:3rem; text-align:center; border-radius:14px;">No matching vacancies found.</div>`;
+        container.innerHTML = `<div style="background:#fff; padding:3.5rem 1.5rem; text-align:center; border-radius:14px; border:1px solid #e2e8f0;">
+          <h3 style="color:#0a2540;">No matching openings found</h3>
+          <p style="color:#64748b; font-size:0.92rem; margin-top:0.4rem;">Try resetting your filters or modifying the location/skill keyword.</p>
+        </div>`;
         return;
       }
 
       container.innerHTML = jobs.map(j => `
-        <article class="naukri-job-card">
-          <div class="card-top">
+        <article class="naukri-card">
+          <div class="card-head">
             <div>
-              <h3 class="job-role">${j.title}</h3>
-              <div class="job-company">${j.company} • <span style="color:#2563eb;">${j.workMode || 'Hybrid'}</span></div>
+              <h3 class="job-title-text">${j.title}</h3>
+              <div class="company-title-wrap">
+                <span>${j.company}</span>
+                <span class="company-star">★ 4.3</span>
+                <span class="badge-mode">${j.workMode || 'Hybrid'}</span>
+              </div>
             </div>
-            <button class="btn-naukri-apply" onclick="applyJob('${j.id}')">Apply</button>
+            <button class="btn-card-apply" onclick="handleApplyAction('${j.id}')">Apply</button>
           </div>
-          <div class="naukri-3pillar">
-            <div class="pillar-item">💼 <strong>${j.experience}</strong></div>
-            <div class="pillar-item">💰 <strong>${j.salary}</strong></div>
-            <div class="pillar-item">📍 <strong>${j.location}</strong></div>
+
+          <div class="stats-3pillar-row">
+            <div class="stat-pillar">💼 <strong>${j.experience}</strong></div>
+            <div class="stat-pillar">💰 <strong>${j.salary}</strong></div>
+            <div class="stat-pillar">📍 <strong>${j.location}</strong></div>
           </div>
-          <p class="job-desc-snippet">${j.snippet}</p>
-          <div class="naukri-skill-tags">${j.skills.map(s => `<span class="naukri-skill-badge">${s}</span>`).join('')}</div>
-          <div class="card-bottom"><span>Verified Opening ✓</span></div>
+
+          <p class="job-description-box">${j.snippet}</p>
+
+          <div class="skills-cluster">
+            ${j.skills.map(s => `<span class="skill-chip">${s}</span>`).join('')}
+          </div>
+
+          <div class="card-footer">
+            <span>Posted: <strong>Today</strong> • Category: ${j.category}</span>
+            <span style="color:#16a34a; font-weight:700;">✓ Verified Employer</span>
+          </div>
         </article>
       `).join("");
     }
 
-    function executeSearch() {
+    function filterJobsList() {
       const kw = document.getElementById("search-keyword").value.toLowerCase().trim();
       const loc = document.getElementById("search-location").value.toLowerCase().trim();
       const exp = document.getElementById("search-experience").value;
 
-      const checkedWorkModes = Array.from(document.querySelectorAll(".cb-workmode:checked")).map(el => el.value);
-      const checkedCategories = Array.from(document.querySelectorAll(".cb-dept:checked")).map(el => el.value);
+      const checkedModes = Array.from(document.querySelectorAll(".cb-mode:checked")).map(el => el.value);
+      const checkedDepts = Array.from(document.querySelectorAll(".cb-dept:checked")).map(el => el.value);
 
-      const filtered = allJobs.filter(j => {
+      const filtered = liveJobs.filter(j => {
         const matchKw = !kw || j.title.toLowerCase().includes(kw) || j.company.toLowerCase().includes(kw) || j.skills.some(s => s.toLowerCase().includes(kw));
         const matchLoc = !loc || j.location.toLowerCase().includes(loc);
         const matchExp = !exp || j.experience.includes(exp);
-        const matchMode = checkedWorkModes.length === 0 || checkedWorkModes.includes(j.workMode);
-        const matchCat = checkedCategories.length === 0 || checkedCategories.includes(j.category);
-        return matchKw && matchLoc && matchExp && matchMode && matchCat;
+        const matchMode = checkedModes.length === 0 || checkedModes.includes(j.workMode);
+        const matchDept = checkedDepts.length === 0 || checkedDepts.includes(j.category);
+        return matchKw && matchLoc && matchExp && matchMode && matchDept;
       });
 
       renderJobs(filtered);
     }
 
-    function filterByPill(cat, el) {
-      document.querySelectorAll(".naukri-pill").forEach(p => p.classList.remove("active"));
+    function filterPill(cat, el) {
+      document.querySelectorAll(".tmj-pill").forEach(p => p.classList.remove("active"));
       if (el) el.classList.add("active");
-      if (cat === 'All') { renderJobs(allJobs); return; }
-      const filtered = allJobs.filter(j => j.category.includes(cat) || (j.workMode && j.workMode.includes(cat)));
+      if (cat === 'All') { renderJobs(liveJobs); return; }
+      const filtered = liveJobs.filter(j => j.category.includes(cat) || (j.workMode && j.workMode.includes(cat)));
       renderJobs(filtered);
     }
 
-    function resetFilters() {
+    function resetAllFilters() {
       document.getElementById("search-keyword").value = "";
       document.getElementById("search-location").value = "";
       document.getElementById("search-experience").value = "";
-      document.querySelectorAll(".cb-workmode, .cb-dept").forEach(cb => cb.checked = false);
-      renderJobs(allJobs);
+      document.querySelectorAll(".cb-mode, .cb-dept").forEach(cb => cb.checked = false);
+      document.querySelectorAll(".tmj-pill").forEach((p, idx) => p.classList.toggle("active", idx === 0));
+      renderJobs(liveJobs);
     }
 
-    function applyJob(id) {
-      const j = allJobs.find(item => item.id === id);
-      alert(`Application sent for ${j.title} at ${j.company}!`);
-    }
+    /* CANDIDATE MODALS & RESUME PARSER */
+    function openCandidateLoginModal() { document.getElementById("cand-login-modal").classList.add("active"); }
+    function closeCandidateLoginModal() { document.getElementById("cand-login-modal").classList.remove("active"); }
 
-    function openCandidateAuthModal() { document.getElementById("candidate-auth-modal").classList.add("active"); }
-    function closeCandidateAuthModal() { document.getElementById("candidate-auth-modal").classList.remove("active"); }
-    function openEmployerModal() { document.getElementById("employer-modal").classList.add("active"); }
-    function closeEmployerModal() { document.getElementById("employer-modal").classList.remove("active"); }
-
-    function handleResumeFile(e) {
+    function handleResumeParse(e) {
       const file = e.target.files[0];
       if (!file) return;
-      document.getElementById("parse-status-text").innerText = `⚡ Analyzing ${file.name}... extracting details`;
+
+      const note = document.getElementById("parse-status-note");
+      note.innerText = `⚡ Parsing ${file.name}... extracting skills, experience, and contact tokens...`;
+
       setTimeout(() => {
         document.getElementById("cand-name").value = "Dr. Dilip Bathena";
         document.getElementById("cand-email").value = "dilip.bath@gmail.com";
         document.getElementById("cand-phone").value = "9618706066";
-        document.getElementById("cand-skills").value = "Python, AI Ops, Capacity Management, SRE, Multi-Cloud";
-        document.getElementById("parse-status-text").innerText = `✅ Success! Profile auto-extracted from ${file.name}`;
+        document.getElementById("cand-skills").value = "Python, AI Ops, Capacity Management, SRE, Multi-Cloud, ITIL, LangGraph";
+        document.getElementById("cand-resume-url").value = `https://toomanyjobs.com/resumes/${file.name}`;
+        note.innerText = `✅ Success! Profile attributes prefilled from ${file.name}.`;
       }, 500);
     }
 
-    function handleCandidateSave(e) {
+    function handleCandidateProfileSave(e) {
       e.preventDefault();
-      closeCandidateAuthModal();
-      alert("Profile Saved! 1-Click Fast Apply is now active.");
+      activeCandidate = {
+        name: document.getElementById("cand-name").value,
+        email: document.getElementById("cand-email").value,
+        phone: document.getElementById("cand-phone").value,
+        exp: document.getElementById("cand-exp").value,
+        ctc: document.getElementById("cand-ctc").value || "36 Lacs PA",
+        skills: document.getElementById("cand-skills").value,
+        resume: document.getElementById("cand-resume-url").value
+      };
+
+      localStorage.setItem(STORAGE_KEY_CAND, JSON.stringify(activeCandidate));
+      closeCandidateLoginModal();
+      updateCandidateUI();
+      alert("🎉 Candidate Profile Saved! 1-Click Fast Apply is now active.");
     }
 
-    function handlePostJob(e) {
-      e.preventDefault();
-      const newJob = {
-        id: "nj-" + Date.now(),
-        title: document.getElementById("post-title").value,
-        company: document.getElementById("post-company").value,
-        location: document.getElementById("post-location").value,
-        experience: document.getElementById("post-exp").value,
-        salary: document.getElementById("post-ctc").value,
-        skills: document.getElementById("post-skills").value.split(",").map(s => s.trim()),
-        snippet: document.getElementById("post-desc").value,
-        category: "Software",
-        workMode: "Hybrid"
+    function candidateGoogleSignIn() {
+      activeCandidate = {
+        name: "Dr. Dilip Bathena",
+        email: "dilip.bath@gmail.com",
+        phone: "9618706066",
+        exp: "8-12 Yrs",
+        ctc: "36 Lacs PA",
+        skills: "Python, AI Ops, Capacity Management, SRE, LangGraph",
+        resume: "https://github.com/dilipbathena"
       };
-      allJobs.unshift(newJob);
-      localStorage.setItem(JOBS_KEY, JSON.stringify(allJobs));
-      closeEmployerModal();
-      renderJobs(allJobs);
-      alert("🎉 Job posted live to the feed!");
+      localStorage.setItem(STORAGE_KEY_CAND, JSON.stringify(activeCandidate));
+      closeCandidateLoginModal();
+      updateCandidateUI();
+      alert("Signed in as " + activeCandidate.email);
+    }
+
+    function handleCandidateLogout() {
+      activeCandidate = null;
+      localStorage.removeItem(STORAGE_KEY_CAND);
+      updateCandidateUI();
+    }
+
+    function updateCandidateUI() {
+      const strip = document.getElementById("cand-status-strip");
+      const nameText = document.getElementById("cand-display-name");
+      const headBtn = document.getElementById("cand-btn-label");
+
+      if (activeCandidate) {
+        strip.style.display = "flex";
+        nameText.innerText = `${activeCandidate.name} (${activeCandidate.exp})`;
+        headBtn.innerText = activeCandidate.name.split(' ')[0];
+      } else {
+        strip.style.display = "none";
+        headBtn.innerText = "Candidate Login";
+      }
+    }
+
+    /* APPLY WORKFLOW */
+    function handleApplyAction(jobId) {
+      const job = liveJobs.find(item => item.id === jobId);
+      if (!job) return;
+
+      if (activeCandidate) {
+        dispatchApplication(job, activeCandidate);
+      } else {
+        document.getElementById("modal-job-id").value = job.id;
+        document.getElementById("modal-job-title").innerText = `Apply: ${job.title}`;
+        document.getElementById("modal-job-sub").innerText = `${job.company} • ${job.location}`;
+        document.getElementById("guest-apply-modal").classList.add("active");
+      }
+    }
+
+    function closeGuestApplyModal() { document.getElementById("guest-apply-modal").classList.remove("active"); }
+
+    function handleGuestApplySubmit(e) {
+      e.preventDefault();
+      const jobId = document.getElementById("modal-job-id").value;
+      const job = liveJobs.find(item => item.id === jobId);
+
+      const applicant = {
+        name: document.getElementById("guest-name").value,
+        email: document.getElementById("guest-email").value,
+        phone: document.getElementById("guest-phone").value,
+        exp: document.getElementById("guest-exp").value,
+        ctc: document.getElementById("guest-ctc").value,
+        resume: document.getElementById("guest-resume").value
+      };
+
+      dispatchApplication(job, applicant);
+      closeGuestApplyModal();
+    }
+
+    function dispatchApplication(job, applicant) {
+      const apps = JSON.parse(localStorage.getItem(STORAGE_KEY_APPS) || "[]");
+      const record = {
+        id: "APP-" + Date.now(),
+        jobId: job.id,
+        jobTitle: job.title,
+        company: job.company,
+        applicantName: applicant.name,
+        email: applicant.email,
+        phone: applicant.phone,
+        exp: applicant.exp,
+        ctc: applicant.ctc || "Disclosed in Resume",
+        resumeUrl: applicant.resume || "Profile Reference",
+        appliedDate: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+      };
+
+      apps.unshift(record);
+      localStorage.setItem(STORAGE_KEY_APPS, JSON.stringify(apps));
+      alert(`🚀 Application submitted successfully for ${job.title} at ${job.company}!\nRecruiter will contact you at ${applicant.phone}.`);
     }
   </script>
 </body>
