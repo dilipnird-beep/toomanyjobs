@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TooManyJobs.com | India's Premier Career & Tech Hiring Platform</title>
+  <title>TooManyJobs.com | Bluestone Consultancy Career Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -51,7 +51,7 @@
     .header-inner {
       max-width: 1280px;
       margin: 0 auto;
-      padding: 0.75rem 1.5rem;
+      padding: 0.65rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -66,10 +66,11 @@
       gap: 0.75rem;
       text-decoration: none;
     }
-    .brand-svg-icon {
-      width: 44px;
-      height: 44px;
-      flex-shrink: 0;
+    .brand-img-logo {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+      display: block;
     }
     .brand-text-col {
       display: flex;
@@ -259,7 +260,7 @@
       border-color: var(--pill-active-bg);
     }
 
-    /* CANDIDATE LOGGED IN BANNER */
+    /* CANDIDATE ACTIVE STRIP */
     .candidate-active-strip {
       background: linear-gradient(90deg, #ecfeff 0%, #eff6ff 100%);
       border: 1.5px solid #bfdbfe;
@@ -575,17 +576,12 @@
   <!-- HEADER -->
   <header class="tmj-header">
     <div class="header-inner">
-      <!-- CUSTOM TOO MANY JOBS LOGO -->
+      <!-- BLUESTONE CONSULTANCY / TOOMANYJOBS LOGO -->
       <a href="index.html" class="brand-logo-wrap">
-        <svg class="brand-svg-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="100" height="100" rx="22" fill="#0A2540" />
-          <path d="M22 68V32H40C46.6 32 50 35.4 50 42C50 48.6 46.6 52 40 52H32V68H22Z" fill="#FFFFFF"/>
-          <path d="M50 68V42C50 35.4 53.4 32 60 32C66.6 32 70 35.4 70 42V68H60V44C60 41.8 58.8 40.6 56 40.6C53.2 40.6 52 41.8 52 44V68H50Z" fill="#FF6B35"/>
-          <circle cx="76" cy="34" r="5" fill="#38BDF8"/>
-        </svg>
+        <img src="cropped-logo.png" alt="Bluestone Consultancy Logo" class="brand-img-logo" onerror="this.style.display='none'" />
         <div class="brand-text-col">
           <div class="brand-main-name">TooMany<span class="brand-accent">Jobs</span>.com</div>
-          <div class="brand-tagline">Careers • AI • Tech • SRE</div>
+          <div class="brand-tagline">Powered by Bluestone Consultancy</div>
         </div>
       </a>
 
@@ -596,7 +592,7 @@
         <a href="admin.html" class="nav-link" style="color:#ef4444; font-weight:700;">Admin Gate ↗</a>
       </nav>
 
-      <!-- AUTH BUTTONS: SEPARATE CANDIDATE & EMPLOYER -->
+      <!-- SEPARATE CANDIDATE & EMPLOYER BUTTONS -->
       <div class="header-auth-group">
         <button class="btn-candidate-login" id="cand-head-btn" onclick="openCandidateLoginModal()">
           <span>👤</span> <span id="cand-btn-label">Candidate Login</span>
@@ -836,7 +832,7 @@
 
   <!-- FOOTER -->
   <footer class="tmj-footer">
-    <p>&copy; 2026 TooManyJobs.com • India's Leading Tech & Career Platform</p>
+    <p>&copy; 2026 TooManyJobs.com • Powered by Bluestone Consultancy</p>
   </footer>
 
   <script>
@@ -866,258 +862,4 @@
         salary: "18 - 25 Lacs PA",
         category: "Cloud / DevOps",
         workMode: "Hybrid",
-        skills: ["Kubernetes", "AWS", "Terraform", "CI/CD", "Linux", "ITIL"],
-        snippet: "Responsible for cluster availability, automated failover pipelines, SLO/SLA monitoring, zero-downtime releases, and incident response."
-      },
-      {
-        id: "tmj-103",
-        title: "Lead Full Stack AI Web Developer",
-        company: "IBM India Software Labs",
-        location: "Hyderabad / Remote",
-        experience: "3-6 Yrs",
-        salary: "14 - 22 Lacs PA",
-        category: "Software",
-        workMode: "Work From Home",
-        skills: ["Python", "FastAPI", "React", "Docker", "PostgreSQL", "REST APIs"],
-        snippet: "Build high-speed enterprise dashboards, real-time agent monitoring toolchains, and scalable customer-facing applications."
-      }
-    ];
-
-    let liveJobs = [];
-    let activeCandidate = null;
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const savedJobs = localStorage.getItem(STORAGE_KEY_JOBS);
-      if (savedJobs) {
-        try { liveJobs = JSON.parse(savedJobs); } catch(e) { liveJobs = [...INITIAL_JOBS]; }
-      } else {
-        liveJobs = [...INITIAL_JOBS];
-        localStorage.setItem(STORAGE_KEY_JOBS, JSON.stringify(liveJobs));
-      }
-
-      const savedCand = localStorage.getItem(STORAGE_KEY_CAND);
-      if (savedCand) {
-        activeCandidate = JSON.parse(savedCand);
-        updateCandidateUI();
-      }
-
-      renderJobs(liveJobs);
-    });
-
-    function renderJobs(jobs) {
-      const container = document.getElementById("jobs-container");
-      document.getElementById("feed-count").innerText = jobs.length;
-
-      if (jobs.length === 0) {
-        container.innerHTML = `<div style="background:#fff; padding:3.5rem 1.5rem; text-align:center; border-radius:14px; border:1px solid #e2e8f0;">
-          <h3 style="color:#0a2540;">No matching openings found</h3>
-          <p style="color:#64748b; font-size:0.92rem; margin-top:0.4rem;">Try resetting your filters or modifying the location/skill keyword.</p>
-        </div>`;
-        return;
-      }
-
-      container.innerHTML = jobs.map(j => `
-        <article class="naukri-card">
-          <div class="card-head">
-            <div>
-              <h3 class="job-title-text">${j.title}</h3>
-              <div class="company-title-wrap">
-                <span>${j.company}</span>
-                <span class="company-star">★ 4.3</span>
-                <span class="badge-mode">${j.workMode || 'Hybrid'}</span>
-              </div>
-            </div>
-            <button class="btn-card-apply" onclick="handleApplyAction('${j.id}')">Apply</button>
-          </div>
-
-          <div class="stats-3pillar-row">
-            <div class="stat-pillar">💼 <strong>${j.experience}</strong></div>
-            <div class="stat-pillar">💰 <strong>${j.salary}</strong></div>
-            <div class="stat-pillar">📍 <strong>${j.location}</strong></div>
-          </div>
-
-          <p class="job-description-box">${j.snippet}</p>
-
-          <div class="skills-cluster">
-            ${j.skills.map(s => `<span class="skill-chip">${s}</span>`).join('')}
-          </div>
-
-          <div class="card-footer">
-            <span>Posted: <strong>Today</strong> • Category: ${j.category}</span>
-            <span style="color:#16a34a; font-weight:700;">✓ Verified Employer</span>
-          </div>
-        </article>
-      `).join("");
-    }
-
-    function filterJobsList() {
-      const kw = document.getElementById("search-keyword").value.toLowerCase().trim();
-      const loc = document.getElementById("search-location").value.toLowerCase().trim();
-      const exp = document.getElementById("search-experience").value;
-
-      const checkedModes = Array.from(document.querySelectorAll(".cb-mode:checked")).map(el => el.value);
-      const checkedDepts = Array.from(document.querySelectorAll(".cb-dept:checked")).map(el => el.value);
-
-      const filtered = liveJobs.filter(j => {
-        const matchKw = !kw || j.title.toLowerCase().includes(kw) || j.company.toLowerCase().includes(kw) || j.skills.some(s => s.toLowerCase().includes(kw));
-        const matchLoc = !loc || j.location.toLowerCase().includes(loc);
-        const matchExp = !exp || j.experience.includes(exp);
-        const matchMode = checkedModes.length === 0 || checkedModes.includes(j.workMode);
-        const matchDept = checkedDepts.length === 0 || checkedDepts.includes(j.category);
-        return matchKw && matchLoc && matchExp && matchMode && matchDept;
-      });
-
-      renderJobs(filtered);
-    }
-
-    function filterPill(cat, el) {
-      document.querySelectorAll(".tmj-pill").forEach(p => p.classList.remove("active"));
-      if (el) el.classList.add("active");
-      if (cat === 'All') { renderJobs(liveJobs); return; }
-      const filtered = liveJobs.filter(j => j.category.includes(cat) || (j.workMode && j.workMode.includes(cat)));
-      renderJobs(filtered);
-    }
-
-    function resetAllFilters() {
-      document.getElementById("search-keyword").value = "";
-      document.getElementById("search-location").value = "";
-      document.getElementById("search-experience").value = "";
-      document.querySelectorAll(".cb-mode, .cb-dept").forEach(cb => cb.checked = false);
-      document.querySelectorAll(".tmj-pill").forEach((p, idx) => p.classList.toggle("active", idx === 0));
-      renderJobs(liveJobs);
-    }
-
-    /* CANDIDATE MODALS & RESUME PARSER */
-    function openCandidateLoginModal() { document.getElementById("cand-login-modal").classList.add("active"); }
-    function closeCandidateLoginModal() { document.getElementById("cand-login-modal").classList.remove("active"); }
-
-    function handleResumeParse(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      const note = document.getElementById("parse-status-note");
-      note.innerText = `⚡ Parsing ${file.name}... extracting skills, experience, and contact tokens...`;
-
-      setTimeout(() => {
-        document.getElementById("cand-name").value = "Dr. Dilip Bathena";
-        document.getElementById("cand-email").value = "dilip.bath@gmail.com";
-        document.getElementById("cand-phone").value = "9618706066";
-        document.getElementById("cand-skills").value = "Python, AI Ops, Capacity Management, SRE, Multi-Cloud, ITIL, LangGraph";
-        document.getElementById("cand-resume-url").value = `https://toomanyjobs.com/resumes/${file.name}`;
-        note.innerText = `✅ Success! Profile attributes prefilled from ${file.name}.`;
-      }, 500);
-    }
-
-    function handleCandidateProfileSave(e) {
-      e.preventDefault();
-      activeCandidate = {
-        name: document.getElementById("cand-name").value,
-        email: document.getElementById("cand-email").value,
-        phone: document.getElementById("cand-phone").value,
-        exp: document.getElementById("cand-exp").value,
-        ctc: document.getElementById("cand-ctc").value || "36 Lacs PA",
-        skills: document.getElementById("cand-skills").value,
-        resume: document.getElementById("cand-resume-url").value
-      };
-
-      localStorage.setItem(STORAGE_KEY_CAND, JSON.stringify(activeCandidate));
-      closeCandidateLoginModal();
-      updateCandidateUI();
-      alert("🎉 Candidate Profile Saved! 1-Click Fast Apply is now active.");
-    }
-
-    function candidateGoogleSignIn() {
-      activeCandidate = {
-        name: "Dr. Dilip Bathena",
-        email: "dilip.bath@gmail.com",
-        phone: "9618706066",
-        exp: "8-12 Yrs",
-        ctc: "36 Lacs PA",
-        skills: "Python, AI Ops, Capacity Management, SRE, LangGraph",
-        resume: "https://github.com/dilipbathena"
-      };
-      localStorage.setItem(STORAGE_KEY_CAND, JSON.stringify(activeCandidate));
-      closeCandidateLoginModal();
-      updateCandidateUI();
-      alert("Signed in as " + activeCandidate.email);
-    }
-
-    function handleCandidateLogout() {
-      activeCandidate = null;
-      localStorage.removeItem(STORAGE_KEY_CAND);
-      updateCandidateUI();
-    }
-
-    function updateCandidateUI() {
-      const strip = document.getElementById("cand-status-strip");
-      const nameText = document.getElementById("cand-display-name");
-      const headBtn = document.getElementById("cand-btn-label");
-
-      if (activeCandidate) {
-        strip.style.display = "flex";
-        nameText.innerText = `${activeCandidate.name} (${activeCandidate.exp})`;
-        headBtn.innerText = activeCandidate.name.split(' ')[0];
-      } else {
-        strip.style.display = "none";
-        headBtn.innerText = "Candidate Login";
-      }
-    }
-
-    /* APPLY WORKFLOW */
-    function handleApplyAction(jobId) {
-      const job = liveJobs.find(item => item.id === jobId);
-      if (!job) return;
-
-      if (activeCandidate) {
-        dispatchApplication(job, activeCandidate);
-      } else {
-        document.getElementById("modal-job-id").value = job.id;
-        document.getElementById("modal-job-title").innerText = `Apply: ${job.title}`;
-        document.getElementById("modal-job-sub").innerText = `${job.company} • ${job.location}`;
-        document.getElementById("guest-apply-modal").classList.add("active");
-      }
-    }
-
-    function closeGuestApplyModal() { document.getElementById("guest-apply-modal").classList.remove("active"); }
-
-    function handleGuestApplySubmit(e) {
-      e.preventDefault();
-      const jobId = document.getElementById("modal-job-id").value;
-      const job = liveJobs.find(item => item.id === jobId);
-
-      const applicant = {
-        name: document.getElementById("guest-name").value,
-        email: document.getElementById("guest-email").value,
-        phone: document.getElementById("guest-phone").value,
-        exp: document.getElementById("guest-exp").value,
-        ctc: document.getElementById("guest-ctc").value,
-        resume: document.getElementById("guest-resume").value
-      };
-
-      dispatchApplication(job, applicant);
-      closeGuestApplyModal();
-    }
-
-    function dispatchApplication(job, applicant) {
-      const apps = JSON.parse(localStorage.getItem(STORAGE_KEY_APPS) || "[]");
-      const record = {
-        id: "APP-" + Date.now(),
-        jobId: job.id,
-        jobTitle: job.title,
-        company: job.company,
-        applicantName: applicant.name,
-        email: applicant.email,
-        phone: applicant.phone,
-        exp: applicant.exp,
-        ctc: applicant.ctc || "Disclosed in Resume",
-        resumeUrl: applicant.resume || "Profile Reference",
-        appliedDate: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
-      };
-
-      apps.unshift(record);
-      localStorage.setItem(STORAGE_KEY_APPS, JSON.stringify(apps));
-      alert(`🚀 Application submitted successfully for ${job.title} at ${job.company}!\nRecruiter will contact you at ${applicant.phone}.`);
-    }
-  </script>
-</body>
-</html>
+        skills: ["Kubernetes", "AWS", "Terraform", "
