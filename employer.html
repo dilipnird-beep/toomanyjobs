@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Employer & Recruiter Hub | TooManyJobs.com</title>
+  <title>Employer Hub & Resdex | TooManyJobs.com</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -24,181 +24,73 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-page); color: var(--text-main); }
 
-    /* HEADER */
-    header {
-      background: #ffffff;
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 0.65rem 1.5rem;
-    }
-    .header-inner {
-      max-width: 1240px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .brand-logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-    }
-    .brand-img-logo {
-      height: 48px;
-      width: auto;
-      object-fit: contain;
-      display: block;
-    }
+    header { background: #ffffff; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; padding: 0.65rem 1.5rem; }
+    .header-inner { max-width: 1240px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+    .brand-logo-wrap { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; }
+    .brand-img-logo { height: 48px; width: auto; object-fit: contain; display: block; }
     .brand-text-col { display: flex; flex-direction: column; }
     .brand-main-name { font-size: 1.4rem; font-weight: 800; color: var(--brand-navy); line-height: 1.1; }
     .brand-main-name span { color: var(--brand-orange); }
     .brand-tagline { font-size: 0.7rem; font-weight: 700; color: var(--brand-blue); text-transform: uppercase; }
 
     .header-links a, .header-links button {
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      padding: 0.5rem 1.25rem;
-      border-radius: var(--radius-pill);
-      cursor: pointer;
+      text-decoration: none; font-weight: 700; font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: var(--radius-pill); cursor: pointer;
     }
-    .link-cand {
-      color: var(--brand-blue);
-      border: 1.5px solid var(--brand-blue);
-      background: transparent;
-      margin-right: 0.75rem;
-    }
-    .btn-emp-auth {
-      background: var(--brand-orange);
-      color: #fff;
-      border: none;
-    }
+    .link-cand { color: var(--brand-blue); border: 1.5px solid var(--brand-blue); background: transparent; margin-right: 0.75rem; }
+    .btn-emp-auth { background: var(--brand-orange); color: #fff; border: none; }
 
-    /* HERO BANNER */
-    .emp-hero {
-      background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 100%);
-      color: #fff;
-      padding: 3rem 1.5rem;
-      text-align: center;
-    }
+    .emp-hero { background: linear-gradient(135deg, #0a2540 0%, #1e3a8a 100%); color: #fff; padding: 3rem 1.5rem; text-align: center; }
     .emp-hero h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.4rem; }
     .emp-hero p { color: #94a3b8; font-size: 1.05rem; }
 
-    /* MEMBERSHIP PACKAGE BAR */
-    .membership-tier-bar {
-      max-width: 1240px;
-      margin: 1.5rem auto 0;
-      padding: 0 1.5rem;
-    }
+    .membership-tier-bar { max-width: 1240px; margin: 1.5rem auto 0; padding: 0 1.5rem; }
     .tier-card-badge {
-      background: #eff6ff;
-      border: 1.5px solid #bfdbfe;
-      color: #1e3a8a;
-      padding: 0.85rem 1.25rem;
-      border-radius: var(--radius-card);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      font-size: 0.92rem;
+      background: #eff6ff; border: 1.5px solid #bfdbfe; color: #1e3a8a; padding: 0.85rem 1.25rem; border-radius: var(--radius-card); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; font-size: 0.92rem;
     }
 
-    /* CONTAINER & TABS */
     .emp-container { max-width: 1240px; margin: 2rem auto; padding: 0 1.5rem 4rem; }
     .tabs-row { display: flex; gap: 1rem; border-bottom: 2px solid var(--border-color); margin-bottom: 2rem; }
     .tab-btn {
-      background: none;
-      border: none;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      padding: 0.75rem 1.25rem;
-      cursor: pointer;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
+      background: none; border: none; font-size: 1.05rem; font-weight: 700; color: var(--text-muted); padding: 0.75rem 1.25rem; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -2px;
     }
     .tab-btn.active { color: var(--brand-orange); border-bottom-color: var(--brand-orange); }
 
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
-    /* FORMS */
     .form-card {
-      background: #fff;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-card);
-      padding: 2rem;
-      max-width: 820px;
-      margin: 0 auto;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+      background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-card); padding: 2rem; max-width: 820px; margin: 0 auto; box-shadow: 0 4px 14px rgba(0,0,0,0.04);
     }
     .form-group { margin-bottom: 1.15rem; }
     .form-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--brand-navy); margin-bottom: 0.35rem; }
     .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 0.7rem 0.9rem;
-      border: 1.5px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      font-family: inherit;
-      font-size: 0.92rem;
+      width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.92rem;
     }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .btn-submit-job {
-      width: 100%;
-      padding: 0.85rem;
-      background: var(--brand-orange);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius-pill);
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-    }
+    .btn-submit-job { width: 100%; padding: 0.85rem; background: var(--brand-orange); color: #fff; border: none; border-radius: var(--radius-pill); font-weight: 700; font-size: 1rem; cursor: pointer; }
 
-    /* TABLES */
     .table-card { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-card); overflow-x: auto; }
     .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
     .data-table th { background: #f8fafc; padding: 0.9rem 1rem; font-weight: 700; color: #475569; border-bottom: 1px solid var(--border-color); }
     .data-table td { padding: 1rem; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
     .btn-del { background: #fee2e2; color: #dc2626; border: none; padding: 0.35rem 0.75rem; border-radius: 6px; font-weight: 700; cursor: pointer; }
 
-    /* MODAL */
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(10,37,64,0.75);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      padding: 1rem;
+      position: fixed; inset: 0; background: rgba(10,37,64,0.75); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 1rem;
     }
     .modal-backdrop.active { display: flex; }
-    .modal-surface {
-      background: #fff;
-      border-radius: var(--radius-card);
-      max-width: 520px;
-      width: 100%;
-      padding: 2.2rem;
-      box-shadow: 0 14px 34px rgba(10,37,64,0.15);
-    }
+    .modal-surface { background: #fff; border-radius: var(--radius-card); max-width: 520px; width: 100%; padding: 2.2rem; box-shadow: 0 14px 34px rgba(10,37,64,0.15); }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
   <header>
     <div class="header-inner">
       <a href="index.html" class="brand-logo-wrap">
-        <img src="cropped-logo.png" alt="Bluestone Consultancy Logo" class="brand-img-logo" onerror="this.style.display='none'" />
+        <img src="cropped-logo.png" alt="Logo" class="brand-img-logo" onerror="this.style.display='none'" />
         <div class="brand-text-col">
           <div class="brand-main-name">TooMany<span>Jobs</span>.com</div>
-          <div class="brand-tagline">Employer Suite</div>
+          <div class="brand-tagline">Employer Hub</div>
         </div>
       </a>
 
@@ -209,17 +101,15 @@
     </div>
   </header>
 
-  <!-- HERO -->
   <section class="emp-hero">
     <h1>TooManyJobs Employer Suite & Talent Sourcing</h1>
     <p>Post active requirements, source resumes, and manage candidates in one unified console.</p>
   </section>
 
-  <!-- MEMBERSHIP PACKAGE STATUS BAR -->
   <div class="membership-tier-bar">
     <div class="tier-card-badge">
       <div>
-        🎁 <strong>Active Membership Package:</strong> <span id="tier-name-display" style="color:#0284c7; font-weight:800;">Free Enterprise Tier</span> (5 Active Free Job Postings Included)
+        🎁 <strong>Active Membership Package:</strong> <span style="color:#0284c7; font-weight:800;">Free Enterprise Tier</span> (5 Active Free Job Postings Included)
       </div>
       <div id="auth-status-indicator">
         <span style="color:#b45309; font-weight:700;">⚠️ Registration & Mail Activation Required to Post Jobs</span>
@@ -227,12 +117,11 @@
     </div>
   </div>
 
-  <!-- WORKSPACE -->
   <div class="emp-container">
     <div class="tabs-row">
       <button class="tab-btn active" onclick="switchTab('tab-post', this)">📢 Post a Job Opening</button>
       <button class="tab-btn" onclick="switchTab('tab-openings', this)">📋 Manage Openings (<span id="jobs-count">0</span>)</button>
-      <button class="tab-btn" onclick="switchTab('tab-resumes', this)">📬 Applications Received (<span id="apps-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('tab-resumes', this)">📬 Applications & Resumes (<span id="apps-count">0</span>)</button>
     </div>
 
     <!-- TAB 1: POST JOB -->
@@ -320,7 +209,7 @@
       </div>
     </div>
 
-    <!-- TAB 3: APPLICATIONS RECEIVED -->
+    <!-- TAB 3: APPLICATIONS & RESUME DOWNLOAD -->
     <div class="tab-panel" id="tab-resumes">
       <div class="table-card">
         <table class="data-table">
@@ -329,7 +218,7 @@
               <th>Applicant Contact</th>
               <th>Role Applied</th>
               <th>Experience & CTC</th>
-              <th>Resume</th>
+              <th>Resume Access</th>
               <th>Date</th>
             </tr>
           </thead>
@@ -339,7 +228,7 @@
     </div>
   </div>
 
-  <!-- EMPLOYER REGISTRATION & MAIL ACTIVATION MODAL -->
+  <!-- AUTH MODAL -->
   <div class="modal-backdrop" id="emp-auth-modal">
     <div class="modal-surface">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
@@ -347,34 +236,32 @@
         <button onclick="closeEmployerAuthModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
       </div>
 
-      <!-- Step 1: Register Form -->
       <div id="auth-step-1">
         <p style="font-size:0.88rem; color:#64748b; margin-bottom:1.2rem;">
-          Register with your corporate email to activate your <strong>Free Enterprise Membership Package</strong> and start hiring.
+          Register with your corporate email to activate your <strong>Free Enterprise Membership Package</strong>.
         </p>
         <form onsubmit="handleEmployerRegisterSubmit(event)">
           <div class="form-group">
-            <label>Company / Enterprise Name *</label>
+            <label>Company Name *</label>
             <input type="text" id="emp-reg-comp" required placeholder="e.g. Bluestone Consultancy" />
           </div>
           <div class="form-group">
-            <label>Official HR / Recruiter Email *</label>
+            <label>Official HR Email *</label>
             <input type="email" id="emp-reg-email" required placeholder="hr@company.com" />
           </div>
           <div class="form-group">
-            <label>Contact Number *</label>
+            <label>Contact Phone *</label>
             <input type="tel" id="emp-reg-phone" required placeholder="9618706066" />
           </div>
           <button type="submit" class="btn-submit-job" style="margin-top:0.5rem;">Register & Send Mail Activation</button>
         </form>
       </div>
 
-      <!-- Step 2: Mail Activation Simulated Box -->
       <div id="auth-step-2" style="display:none; text-align:center; padding:1rem 0;">
         <div style="font-size:3rem; margin-bottom:0.5rem;">✉️</div>
         <h3 style="color:var(--brand-navy); margin-bottom:0.5rem;">Activation Mail Sent!</h3>
         <p style="font-size:0.9rem; color:#64748b; margin-bottom:1.5rem;">
-          We sent a verification link to <strong id="sent-email-target">hr@company.com</strong>. Click below to activate your account and join the Free Package.
+          We sent a verification link to <strong id="sent-email-target">hr@company.com</strong>. Click below to activate your account.
         </p>
         <button onclick="simulateMailActivation()" style="background:#16a34a; color:#fff; border:none; padding:0.75rem 1.5rem; border-radius:999px; font-weight:700; cursor:pointer; font-size:1rem; width:100%;">
           ✓ Click to Activate Mail & Join Free Package
@@ -384,9 +271,9 @@
   </div>
 
   <script>
-    const STORAGE_KEY_JOBS = 'TMJ_JOBS_STORE_V4';
-    const STORAGE_KEY_APPS = 'TMJ_APPS_STORE_V4';
-    const STORAGE_KEY_EMP_AUTH = 'TMJ_EMP_LOGGED_IN_V2';
+    const STORAGE_KEY_JOBS = 'TMJ_JOBS_STORE_V5';
+    const STORAGE_KEY_APPS = 'TMJ_APPS_STORE_V5';
+    const STORAGE_KEY_EMP_AUTH = 'TMJ_EMP_LOGGED_IN_V3';
 
     let currentEmployer = null;
 
@@ -437,22 +324,23 @@
             <td><strong>${a.applicantName}</strong><br><small>${a.email} • ${a.phone}</small></td>
             <td><strong>${a.jobTitle}</strong><br><small style="color:#64748b;">${a.company}</small></td>
             <td>${a.exp}<br><small style="color:#15803d;">${a.ctc}</small></td>
-            <td><a href="${a.resumeUrl}" target="_blank" style="color:#185adb; font-weight:700;">View Resume ↗</a></td>
+            <td>
+              <a href="${a.resumeUrl}" target="_blank" download style="color:#185adb; font-weight:700; background:#eff6ff; padding:0.3rem 0.6rem; border-radius:6px; text-decoration:none; display:inline-block;">
+                📥 Download CV
+              </a>
+            </td>
             <td>${a.appliedDate}</td>
           </tr>
         `).join("");
       }
     }
 
-    /* EMPLOYER AUTH & MAIL ACTIVATION FLOW */
     function openEmployerAuthModal() {
       document.getElementById("auth-step-1").style.display = "block";
       document.getElementById("auth-step-2").style.display = "none";
       document.getElementById("emp-auth-modal").classList.add("active");
     }
-    function closeEmployerAuthModal() {
-      document.getElementById("emp-auth-modal").classList.remove("active");
-    }
+    function closeEmployerAuthModal() { document.getElementById("emp-auth-modal").classList.remove("active"); }
 
     let tempEmpData = null;
     function handleEmployerRegisterSubmit(e) {
@@ -462,7 +350,6 @@
         email: document.getElementById("emp-reg-email").value,
         phone: document.getElementById("emp-reg-phone").value
       };
-
       document.getElementById("sent-email-target").innerText = tempEmpData.email;
       document.getElementById("auth-step-1").style.display = "none";
       document.getElementById("auth-step-2").style.display = "block";
@@ -473,7 +360,7 @@
       localStorage.setItem(STORAGE_KEY_EMP_AUTH, JSON.stringify(currentEmployer));
       closeEmployerAuthModal();
       updateEmployerAuthUI();
-      alert("🎉 Email Activated Successfully! You have joined the Free Enterprise Membership Tier and can now post jobs.");
+      alert("🎉 Email Activated Successfully! You have joined the Free Enterprise Membership Tier.");
     }
 
     function handleEmployerLogout() {
@@ -499,7 +386,6 @@
       }
     }
 
-    /* JOB POSTING GATE */
     function handleJobCreate(e) {
       e.preventDefault();
       if (!currentEmployer) {
