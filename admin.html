@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --dark-navy: #0f172a;
@@ -188,7 +190,7 @@
               <tr>
                 <th>Candidate Name & Contact</th>
                 <th>Applied Position</th>
-                <th>Experience & CTC</th>
+                <th>Experience</th>
                 <th>Resume Link</th>
                 <th>Applied Date</th>
               </tr>
@@ -202,10 +204,22 @@
 
   </div>
 
-  <script src="config.js"></script>
   <script>
-    const MASTER_ADMIN = window.NAUKRI_CONFIG.masterAdminEmail;
-    const { jobs: JOBS_KEY, applications: APPS_KEY, adminSession: ADMIN_TOKEN } = window.NAUKRI_CONFIG.storageKeys;
+    // =========================================================================
+    // SUPABASE CONFIGURATION (MATCHING INDEX & EMPLOYER PORTALS)
+    // =========================================================================
+    const SUPABASE_URL = 'https://rtqdttxqogzijfqtlseh.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_1fWzPSKGkF0yOPeu_qveMQ_a0NE_m5n';
+
+    window.getSupabase = function() {
+      if (window._sbClient) return window._sbClient;
+      if (!window.supabase || typeof window.supabase.createClient !== 'function') return null;
+      window._sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return window._sbClient;
+    };
+
+    const MASTER_ADMIN = "dilip.bath@gmail.com";
+    const ADMIN_TOKEN = 'TMJ_ADMIN_TOKEN_V4';
 
     document.addEventListener("DOMContentLoaded", () => {
       if (sessionStorage.getItem(ADMIN_TOKEN) === MASTER_ADMIN) {
@@ -240,9 +254,20 @@
       location.reload();
     }
 
-    function loadMasterData() {
-      const jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
-      const apps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
+    async function loadMasterData() {
+      let jobs = [];
+      let apps = [];
+
+      const sb = window.getSupabase();
+      if (sb) {
+        const { data: jData } = await sb.from('jobs').select('*').order('created_at', { ascending: false });
+        const { data: aData } = await sb.from('applications').select('*');
+        jobs = jData || [];
+        apps = aData || [];
+      } else {
+        jobs = JSON.parse(localStorage.getItem('TMJ_JOBS_STORE_V6') || "[]");
+        apps = JSON.parse(localStorage.getItem('TMJ_APPS_STORE_V6') || "[]");
+      }
 
       document.getElementById("count-all-jobs").innerText = jobs.length;
       document.getElementById("count-all-apps").innerText = apps.length;
@@ -255,10 +280,10 @@
         jobsTbody.innerHTML = jobs.map(j => `
           <tr>
             <td><strong>${j.title}</strong><br><small style="color:#64748b;">${j.company}</small></td>
-            <td>${j.location}<br><small style="color:#2563eb;">${j.workMode || 'Hybrid'}</small></td>
+            <td>${j.location}<br><small style="color:#2563eb;">${j.work_mode || j.workMode || 'Hybrid'}</small></td>
             <td>${j.experience}</td>
             <td style="color:#15803d; font-weight:700;">${j.salary}</td>
-            <td><small>${j.postedBy || 'Admin'}</small></td>
+            <td><small>${j.employer_id || j.postedBy || 'Admin'}</small></td>
             <td><button class="btn-del" onclick="deleteMasterJob('${j.id}')">Delete</button></td>
           </tr>
         `).join("");
@@ -269,23 +294,39 @@
       if (apps.length === 0) {
         appsTbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:2rem;">No candidate resumes in database.</td></tr>`;
       } else {
-        appsTbody.innerHTML = apps.map(a => `
-          <tr>
-            <td><strong>${a.applicantName}</strong><br><small>${a.email} • ${a.phone}</small></td>
-            <td><strong>${a.jobTitle}</strong><br><small style="color:#64748b;">${a.company}</small></td>
-            <td>${a.exp}<br><small style="color:#15803d;">${a.ctc}</small></td>
-            <td><a href="${a.resumeUrl}" target="_blank" style="color:#2563eb; font-weight:700;">View Resume ↗</a></td>
-            <td>${a.appliedDate}</td>
-          </tr>
-        `).join("");
+        appsTbody.innerHTML = apps.map(a => {
+          const name = a.applicant_name || a.applicantName;
+          const jobTitle = a.job_title || a.jobTitle;
+          const url = a.resume_url || a.resumeUrl;
+          const date = a.applied_date || a.appliedDate;
+          return `
+            <tr>
+              <td><strong>${name}</strong><br><small>${a.email} • ${a.phone}</small></td>
+              <td><strong>${jobTitle}</strong><br><small style="color:#64748b;">${a.company}</small></td>
+              <td>${a.exp}</td>
+              <td><a href="${url}" target="_blank" rel="noopener noreferrer" style="color:#2563eb; font-weight:700;">View Resume ↗</a></td>
+              <td>${date}</td>
+            </tr>
+          `;
+        }).join("");
       }
     }
 
-    function deleteMasterJob(id) {
+    async function deleteMasterJob(id) {
       if (!confirm("Permanently delete this opening from TooManyJobs?")) return;
-      let jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
-      jobs = jobs.filter(j => j.id !== id);
-      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
+
+      const sb = window.getSupabase();
+      if (sb) {
+        const { error } = await sb.from('jobs').delete().eq('id', id);
+        if (error) {
+          alert("Error deleting job: " + error.message);
+          return;
+        }
+      } else {
+        let jobs = JSON.parse(localStorage.getItem('TMJ_JOBS_STORE_V6') || "[]");
+        jobs = jobs.filter(j => j.id !== id);
+        localStorage.setItem('TMJ_JOBS_STORE_V6', JSON.stringify(jobs));
+      }
       loadMasterData();
     }
 
@@ -296,8 +337,9 @@
       btn.classList.add("active");
     }
 
-    function publishToLive() {
-      alert("✅ All job listings and applications synchronized live.");
+    async function publishToLive() {
+      await loadMasterData();
+      alert("✅ All job listings and applications synchronized live with Supabase database.");
     }
   </script>
 </body>
