@@ -558,11 +558,20 @@
 
   <script>
     // =========================================================================
-    // 1. SUPABASE CONFIGURATION (INSERT YOUR PROJECT URL & ANON KEY HERE)
+    // 1. SUPABASE CONFIGURATION (ROOT PROJECT URL — NO /rest/v1/ SUFFIX)
     // =========================================================================
-    const SUPABASE_URL = 'https://rtqdttxqogzijfqtlseh.supabase.co/rest/v1/';
+    const SUPABASE_URL = 'https://rtqdttxqogzijfqtlseh.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_1fWzPSKGkF0yOPeu_qveMQ_a0NE_m5n';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Safe lazy-getter to prevent initialization/hoisting errors
+    window.getSupabase = function() {
+      if (window._sbClient) return window._sbClient;
+      if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+        throw new Error("Supabase SDK failed to load from CDN. Please check your internet connection.");
+      }
+      window._sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      return window._sbClient;
+    };
 
     const ACTIVE_CAND_KEY = 'TMJ_ACTIVE_CAND_EMAIL_SB';
     let allJobs = [];
@@ -574,47 +583,56 @@
 
       const activeEmail = localStorage.getItem(ACTIVE_CAND_KEY);
       if (activeEmail) {
-        const { data, error } = await supabaseClient
-          .from('candidate_profiles')
-          .select('*')
-          .eq('email', activeEmail)
-          .single();
+        try {
+          const { data, error } = await window.getSupabase()
+            .from('candidate_profiles')
+            .select('*')
+            .eq('email', activeEmail)
+            .single();
 
-        if (data && !error) {
-          currentCandidate = data;
-          await fetchMyApplications();
-          updateHeaderAuthState();
-          renderPublicJobs(allJobs);
+          if (data && !error) {
+            currentCandidate = data;
+            await fetchMyApplications();
+            updateHeaderAuthState();
+            renderPublicJobs(allJobs);
+          }
+        } catch (err) {
+          console.error("Session restore error:", err);
         }
       }
     });
 
     /* FETCH JOBS FROM SUPABASE */
     async function fetchJobsFromSupabase() {
-      const { data, error } = await supabaseClient
-        .from('jobs')
-        .select('*')
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await window.getSupabase()
+          .from('jobs')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error("Error loading jobs:", error);
-        document.getElementById("jobs-container").innerHTML = `<div style="background:#fee2e2; color:#b91c1c; padding:1.5rem; border-radius:12px;">Database Connection Error: Please verify your Supabase URL and Anon Key in index.html.</div>`;
-        return;
+        if (error) throw error;
+
+        allJobs = data || [];
+        renderPublicJobs(allJobs);
+      } catch (err) {
+        console.error("Error loading jobs:", err);
+        document.getElementById("jobs-container").innerHTML = `<div style="background:#fee2e2; color:#b91c1c; padding:1.5rem; border-radius:12px;">Database Connection Error: ${err.message}</div>`;
       }
-
-      allJobs = data || [];
-      renderPublicJobs(allJobs);
     }
 
     async function fetchMyApplications() {
       if (!currentCandidate) return;
-      const { data, error } = await supabaseClient
-        .from('applications')
-        .select('*')
-        .eq('email', currentCandidate.email);
+      try {
+        const { data, error } = await window.getSupabase()
+          .from('applications')
+          .select('*')
+          .eq('email', currentCandidate.email);
 
-      if (!error && data) {
-        myApplications = data;
+        if (!error && data) {
+          myApplications = data;
+        }
+      } catch (err) {
+        console.error("Error fetching applications:", err);
       }
     }
 
@@ -641,11 +659,12 @@
     }
 
     async function uploadResumeToBucket(file, candidateIdentifier) {
+      const db = window.getSupabase();
       const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
       const safeFolder = candidateIdentifier.replace(/[^a-zA-Z0-9]/g, '_');
       const filePath = `${safeFolder}/${Date.now()}_${sanitizedName}`;
 
-      const { data, error } = await supabaseClient.storage
+      const { error } = await db.storage
         .from('resumes')
         .upload(filePath, file, { cacheControl: '3600', upsert: false });
 
@@ -653,7 +672,7 @@
         throw new Error("Resume upload failed: " + error.message);
       }
 
-      const { data: publicUrlData } = supabaseClient.storage
+      const { data: publicUrlData } = db.storage
         .from('resumes')
         .getPublicUrl(filePath);
 
@@ -705,38 +724,43 @@
       btn.disabled = true;
       btn.innerText = "Verifying...";
 
-      const email = document.getElementById("login-email").value.trim().toLowerCase();
-      const phone = document.getElementById("login-phone").value.trim();
+      try {
+        const db = window.getSupabase();
+        const email = document.getElementById("login-email").value.trim().toLowerCase();
+        const phone = document.getElementById("login-phone").value.trim();
 
-      const { data: existingProfile, error } = await supabaseClient
-        .from('candidate_profiles')
-        .select('*')
-        .eq('email', email)
-        .single();
+        const { data: existingProfile, error } = await db
+          .from('candidate_profiles')
+          .select('*')
+          .eq('email', email)
+          .single();
 
-      btn.disabled = false;
-      btn.innerText = "Login to Candidate Dashboard";
+        if (error || !existingProfile) {
+          alert("⚠️ No account found with this email. Please register your profile.");
+          switchAuthTab('register');
+          document.getElementById("auth-email").value = email;
+          document.getElementById("auth-phone").value = phone;
+          return;
+        }
 
-      if (error || !existingProfile) {
-        alert("⚠️ No account found with this email. Please register your profile.");
-        switchAuthTab('register');
-        document.getElementById("auth-email").value = email;
-        document.getElementById("auth-phone").value = phone;
-        return;
+        if (existingProfile.phone !== phone) {
+          alert("❌ Mobile number does not match the registered profile for this email.");
+          return;
+        }
+
+        localStorage.setItem(ACTIVE_CAND_KEY, email);
+        currentCandidate = existingProfile;
+        closeAuthModal();
+        updateHeaderAuthState();
+        await fetchMyApplications();
+        renderPublicJobs(allJobs);
+        openCandidateDashboard();
+      } catch (err) {
+        alert("Login Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Login to Candidate Dashboard";
       }
-
-      if (existingProfile.phone !== phone) {
-        alert("❌ Mobile number does not match the registered profile for this email.");
-        return;
-      }
-
-      localStorage.setItem(ACTIVE_CAND_KEY, email);
-      currentCandidate = existingProfile;
-      closeAuthModal();
-      updateHeaderAuthState();
-      await fetchMyApplications();
-      renderPublicJobs(allJobs);
-      openCandidateDashboard();
     }
 
     async function handleCandidateRegisterSubmit(e) {
@@ -754,6 +778,7 @@
       btn.innerText = "Uploading Resume & Creating Profile...";
 
       try {
+        const db = window.getSupabase();
         const email = document.getElementById("auth-email").value.trim().toLowerCase();
         const resumePublicUrl = await uploadResumeToBucket(file, email);
 
@@ -768,7 +793,7 @@
           default_resume_url: resumePublicUrl
         };
 
-        const { data, error } = await supabaseClient
+        const { data, error } = await db
           .from('candidate_profiles')
           .upsert(profilePayload)
           .select()
@@ -908,6 +933,7 @@
       btn.innerText = "Saving to Cloud...";
 
       try {
+        const db = window.getSupabase();
         let resumeUrl = currentCandidate.default_resume_url;
         const newFile = document.getElementById("prof-file-input").files[0];
         if (newFile) {
@@ -926,7 +952,7 @@
           updated_at: new Date().toISOString()
         };
 
-        const { data, error } = await supabaseClient
+        const { data, error } = await db
           .from('candidate_profiles')
           .upsert(updatedPayload)
           .select()
@@ -1082,39 +1108,41 @@
     }
 
     async function submitApplicationToSupabase(job, applicant) {
-      const appPayload = {
-        id: "APP-" + Date.now(),
-        job_id: job.id,
-        employer_id: job.employer_id,
-        job_title: job.title,
-        company: job.company,
-        applicant_name: applicant.name,
-        email: applicant.email,
-        phone: applicant.phone,
-        exp: applicant.experience,
-        candidate_skills: applicant.skills || [],
-        resume_url: applicant.default_resume_url,
-        status: "Applied",
-        applied_date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
-      };
+      try {
+        const db = window.getSupabase();
+        const appPayload = {
+          id: "APP-" + Date.now(),
+          job_id: job.id,
+          employer_id: job.employer_id,
+          job_title: job.title,
+          company: job.company,
+          applicant_name: applicant.name,
+          email: applicant.email,
+          phone: applicant.phone,
+          exp: applicant.experience,
+          candidate_skills: applicant.skills || [],
+          resume_url: applicant.default_resume_url,
+          status: "Applied",
+          applied_date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+        };
 
-      const { error } = await supabaseClient
-        .from('applications')
-        .insert(appPayload);
+        const { error } = await db
+          .from('applications')
+          .insert(appPayload);
 
-      if (error) {
-        alert("Could not submit application: " + error.message);
-        return;
+        if (error) throw error;
+
+        if (currentCandidate) {
+          await fetchMyApplications();
+          populateCandidateDashboard();
+        }
+        renderPublicJobs(allJobs);
+
+        document.getElementById("confirm-msg-text").innerText = `Your application and resume for "${job.title}" at ${job.company} have been securely uploaded to Supabase.`;
+        document.getElementById("confirm-modal").classList.add("active");
+      } catch (err) {
+        alert("Could not submit application: " + err.message);
       }
-
-      if (currentCandidate) {
-        await fetchMyApplications();
-        populateCandidateDashboard();
-      }
-      renderPublicJobs(allJobs);
-
-      document.getElementById("confirm-msg-text").innerText = `Your application and resume for "${job.title}" at ${job.company} have been securely uploaded to Supabase.`;
-      document.getElementById("confirm-modal").classList.add("active");
     }
   </script>
 </body>
