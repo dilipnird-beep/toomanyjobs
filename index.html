@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --brand-navy: #0a2540;
@@ -194,6 +196,7 @@
     .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
     .btn-modal-action { width: 100%; padding: 0.85rem; background: var(--brand-blue); color: #ffffff; border: none; border-radius: var(--radius-pill); font-weight: 700; font-size: 0.95rem; cursor: pointer; }
     .btn-modal-action:hover { background: var(--brand-blue-hover); }
+    .btn-modal-action:disabled { background: #94a3b8; cursor: not-allowed; }
 
     .resume-drop-card { border: 2px dashed #60a5fa; background: #eff6ff; padding: 1.4rem 1rem; text-align: center; border-radius: var(--radius-card); cursor: pointer; margin-bottom: 1rem; display: block; }
     .resume-drop-card:hover { background: #dbeafe; border-color: var(--brand-blue); }
@@ -292,9 +295,11 @@
       <main>
         <div class="feed-stats-bar">
           <h2>Showing <span id="feed-count">0</span> Active Openings</h2>
-          <span style="font-size:0.85rem; color:#64748b;">Sorted by: <strong>Freshness</strong></span>
+          <span style="font-size:0.85rem; color:#64748b;">Cloud Synced: <strong>Supabase Live</strong></span>
         </div>
-        <div class="jobs-flow-list" id="jobs-container"></div>
+        <div class="jobs-flow-list" id="jobs-container">
+          <div style="background:#fff; padding:3rem; text-align:center; border-radius:14px; color:#64748b;">Loading live jobs from database...</div>
+        </div>
       </main>
     </div>
   </div>
@@ -392,21 +397,21 @@
             <div class="form-field">
               <label>Update Default Resume (PDF or DOCX only, Max 5MB)</label>
               <label class="resume-drop-card" style="margin-bottom:0.5rem; padding:1rem;">
-                <input type="file" accept=".pdf,.docx" style="display:none;" onchange="handleProfileResumeUpload(event)" />
-                <strong>📄 Click to Replace Default Resume</strong>
+                <input type="file" id="prof-file-input" accept=".pdf,.docx" style="display:none;" onchange="handleProfileResumeSelected(event)" />
+                <strong>📄 Click to Select New Resume File</strong>
                 <div id="prof-resume-status" style="font-size:0.82rem; color:var(--brand-blue); font-weight:700; margin-top:0.25rem;"></div>
               </label>
               <input type="text" id="prof-resume-url" readonly style="background:#f8fafc; font-size:0.82rem; color:#475569;" />
             </div>
 
-            <button type="submit" class="btn-modal-action">Save Profile Changes</button>
+            <button type="submit" id="prof-save-btn" class="btn-modal-action">Save Profile Changes</button>
           </form>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- CANDIDATE DUAL-MODE AUTH MODAL (EXISTING USER LOGIN + NEW REGISTRATION) -->
+  <!-- CANDIDATE DUAL-MODE AUTH MODAL -->
   <div class="modal-backdrop" id="auth-modal">
     <div class="modal-surface">
       <div class="modal-header-row">
@@ -417,7 +422,6 @@
         <button class="modal-close-cross" onclick="closeAuthModal()">&times;</button>
       </div>
 
-      <!-- MODE SWITCH TABS -->
       <div class="auth-mode-tabs">
         <button type="button" class="auth-mode-btn active" id="tab-btn-login" onclick="switchAuthTab('login')">Candidate Login</button>
         <button type="button" class="auth-mode-btn" id="tab-btn-register" onclick="switchAuthTab('register')">New Register</button>
@@ -434,7 +438,7 @@
             <label>Registered Mobile Number *</label>
             <input type="tel" id="login-phone" required placeholder="Enter your 10-digit mobile number" />
           </div>
-          <button type="submit" class="btn-modal-action">Login to Candidate Dashboard</button>
+          <button type="submit" id="login-submit-btn" class="btn-modal-action">Login to Candidate Dashboard</button>
         </form>
         <p style="text-align:center; font-size:0.84rem; color:var(--text-muted); margin-top:1.25rem;">
           New to TooManyJobs? <a href="#" onclick="switchAuthTab('register'); return false;" style="color:var(--brand-blue); font-weight:700; text-decoration:none;">Create Candidate Account →</a>
@@ -479,10 +483,9 @@
           </div>
           <div class="form-field">
             <label>Upload Resume (PDF / DOCX only, Max 5MB) *</label>
-            <input type="file" id="auth-resume-file" accept=".pdf,.docx" required onchange="validateFileInput(event, 'auth-file-path')" style="padding:0.45rem; border:1px solid #cbd5e1; border-radius:6px; width:100%;" />
-            <input type="hidden" id="auth-file-path" />
+            <input type="file" id="auth-resume-file" accept=".pdf,.docx" required onchange="validateSelectedFile(event)" style="padding:0.45rem; border:1px solid #cbd5e1; border-radius:6px; width:100%;" />
           </div>
-          <button type="submit" class="btn-modal-action" style="background:var(--brand-orange);">Register & Open Dashboard</button>
+          <button type="submit" id="reg-submit-btn" class="btn-modal-action" style="background:var(--brand-orange);">Register & Open Dashboard</button>
         </form>
       </div>
     </div>
@@ -532,10 +535,9 @@
         </div>
         <div class="form-field">
           <label>Upload Resume (PDF/DOCX, Max 5MB) *</label>
-          <input type="file" id="g-resume-file" accept=".pdf,.docx" required onchange="validateFileInput(event, 'g-file-path')" style="padding:0.45rem; border:1px solid #cbd5e1; border-radius:6px; width:100%;" />
-          <input type="hidden" id="g-file-path" />
+          <input type="file" id="g-resume-file" accept=".pdf,.docx" required onchange="validateSelectedFile(event)" style="padding:0.45rem; border:1px solid #cbd5e1; border-radius:6px; width:100%;" />
         </div>
-        <button type="submit" class="btn-modal-action">Submit Application</button>
+        <button type="submit" id="guest-apply-btn" class="btn-modal-action">Submit Application</button>
       </form>
     </div>
   </div>
@@ -555,74 +557,108 @@
   </footer>
 
   <script>
-    const JOBS_KEY = 'TMJ_JOBS_STORE_V6';
-    const APPS_KEY = 'TMJ_APPS_STORE_V6';
-    const PROFILES_KEY = 'TMJ_CAND_PROFILES_V6';
-    const ACTIVE_CAND_KEY = 'TMJ_ACTIVE_CAND_EMAIL_V6';
+    // =========================================================================
+    // 1. SUPABASE CONFIGURATION (INSERT YOUR PROJECT URL & ANON KEY HERE)
+    // =========================================================================
+    const SUPABASE_URL = 'YOUR_PROJECT_URL_HERE';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    const ACTIVE_CAND_KEY = 'TMJ_ACTIVE_CAND_EMAIL_SB';
     let allJobs = [];
     let currentCandidate = null;
+    let myApplications = [];
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const storedJobs = localStorage.getItem(JOBS_KEY);
-      if (storedJobs) {
-        try { allJobs = JSON.parse(storedJobs); } catch(e) { allJobs = []; }
-      } else {
-        allJobs = [
-          {
-            id: "tmj-101",
-            employerId: "hr@cognizant.com",
-            title: "Senior Capacity & Performance Manager - AI Ops",
-            company: "Cognizant Technology Solutions",
-            location: "Hyderabad",
-            experience: "8-12 Yrs",
-            salary: "28 - 38 Lacs PA",
-            category: "AI / Data Science",
-            workMode: "Hybrid",
-            skills: ["Python", "LangGraph", "Capacity Planning", "Prometheus", "SRE"],
-            snippet: "Lead multi-cloud capacity management, telemetry anomaly forecasting, and agentic AI operations."
-          },
-          {
-            id: "tmj-102",
-            employerId: "talent@kyndryl.com",
-            title: "Site Reliability Engineer (SRE) - Cloud Platforms",
-            company: "Kyndryl Global Solutions",
-            location: "Bengaluru / Hybrid",
-            experience: "4-8 Yrs",
-            salary: "18 - 25 Lacs PA",
-            category: "Cloud / DevOps",
-            workMode: "Hybrid",
-            skills: ["Kubernetes", "AWS", "Terraform", "Docker", "Linux"],
-            snippet: "Own cluster uptime, automated failover pipelines, SLO/SLA monitoring, and zero-downtime releases."
-          },
-          {
-            id: "tmj-103",
-            employerId: "careers@bluestone.com",
-            title: "Full Stack AI Web Developer",
-            company: "Bluestone Consultancy",
-            location: "Hyderabad / Remote",
-            experience: "1-3 Yrs",
-            salary: "12 - 18 Lacs PA",
-            category: "Software",
-            workMode: "Work From Home",
-            skills: ["Python", "React", "FastAPI", "PostgreSQL", "REST APIs"],
-            snippet: "Develop scalable enterprise web interfaces and AI-integrated recruitment tools."
-          }
-        ];
-        localStorage.setItem(JOBS_KEY, JSON.stringify(allJobs));
-      }
+    document.addEventListener("DOMContentLoaded", async () => {
+      await fetchJobsFromSupabase();
 
       const activeEmail = localStorage.getItem(ACTIVE_CAND_KEY);
       if (activeEmail) {
-        const profiles = JSON.parse(localStorage.getItem(PROFILES_KEY) || "{}");
-        if (profiles[activeEmail]) {
-          currentCandidate = profiles[activeEmail];
+        const { data, error } = await supabaseClient
+          .from('candidate_profiles')
+          .select('*')
+          .eq('email', activeEmail)
+          .single();
+
+        if (data && !error) {
+          currentCandidate = data;
+          await fetchMyApplications();
           updateHeaderAuthState();
+          renderPublicJobs(allJobs);
         }
       }
-
-      renderPublicJobs(allJobs);
     });
+
+    /* FETCH JOBS FROM SUPABASE */
+    async function fetchJobsFromSupabase() {
+      const { data, error } = await supabaseClient
+        .from('jobs')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error("Error loading jobs:", error);
+        document.getElementById("jobs-container").innerHTML = `<div style="background:#fee2e2; color:#b91c1c; padding:1.5rem; border-radius:12px;">Database Connection Error: Please verify your Supabase URL and Anon Key in index.html.</div>`;
+        return;
+      }
+
+      allJobs = data || [];
+      renderPublicJobs(allJobs);
+    }
+
+    async function fetchMyApplications() {
+      if (!currentCandidate) return;
+      const { data, error } = await supabaseClient
+        .from('applications')
+        .select('*')
+        .eq('email', currentCandidate.email);
+
+      if (!error && data) {
+        myApplications = data;
+      }
+    }
+
+    /* FILE VALIDATION & SUPABASE STORAGE UPLOAD */
+    function validateSelectedFile(event) {
+      const file = event.target.files[0];
+      if (!file) return false;
+
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+
+      if (file.size > maxSize) {
+        alert("❌ File exceeds 5MB limit. Please choose a smaller PDF or DOCX file.");
+        event.target.value = "";
+        return false;
+      }
+
+      if (!validTypes.includes(file.type) && !file.name.match(/\.(pdf|docx)$/i)) {
+        alert("❌ Invalid format. Only PDF and DOCX files are permitted.");
+        event.target.value = "";
+        return false;
+      }
+      return true;
+    }
+
+    async function uploadResumeToBucket(file, candidateIdentifier) {
+      const sanitizedName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
+      const safeFolder = candidateIdentifier.replace(/[^a-zA-Z0-9]/g, '_');
+      const filePath = `${safeFolder}/${Date.now()}_${sanitizedName}`;
+
+      const { data, error } = await supabaseClient.storage
+        .from('resumes')
+        .upload(filePath, file, { cacheControl: '3600', upsert: false });
+
+      if (error) {
+        throw new Error("Resume upload failed: " + error.message);
+      }
+
+      const { data: publicUrlData } = supabaseClient.storage
+        .from('resumes')
+        .getPublicUrl(filePath);
+
+      return publicUrlData.publicUrl;
+    }
 
     /* NAVIGATION & VIEW SWITCHING */
     function switchMainView(viewId, btn) {
@@ -632,12 +668,13 @@
       if (btn) btn.classList.add("active");
     }
 
-    function openCandidateDashboard() {
+    async function openCandidateDashboard() {
       if (!currentCandidate) {
         openAuthModal('login');
         return;
       }
       switchMainView('view-dashboard', document.getElementById("nav-dash-btn"));
+      await fetchMyApplications();
       populateCandidateDashboard();
     }
 
@@ -646,32 +683,6 @@
       document.querySelectorAll(".dash-tab-btn").forEach(b => b.classList.remove("active"));
       document.getElementById(panelId).classList.add("active");
       btn.classList.add("active");
-    }
-
-    /* FILE VALIDATION & SANITIZATION */
-    function validateFileInput(event, hiddenInputId) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const maxSize = 5 * 1024 * 1024;
-      const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-
-      if (file.size > maxSize) {
-        alert("❌ File exceeds 5MB limit. Please choose a smaller PDF or DOCX file.");
-        event.target.value = "";
-        return;
-      }
-
-      if (!validTypes.includes(file.type) && !file.name.match(/\.(pdf|docx)$/i)) {
-        alert("❌ Invalid format. Only PDF and DOCX files are permitted.");
-        event.target.value = "";
-        return;
-      }
-
-      const sanitized = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').toLowerCase();
-      const bucketPath = `/storage/v1/object/public/resumes/${Date.now()}_${sanitized}`;
-      document.getElementById(hiddenInputId).value = bucketPath;
-      return bucketPath;
     }
 
     /* DUAL-MODE CANDIDATE AUTHENTICATION */
@@ -688,14 +699,25 @@
       document.getElementById("pane-register").classList.toggle("active", mode === 'register');
     }
 
-    function handleExistingCandidateLogin(e) {
+    async function handleExistingCandidateLogin(e) {
       e.preventDefault();
+      const btn = document.getElementById("login-submit-btn");
+      btn.disabled = true;
+      btn.innerText = "Verifying...";
+
       const email = document.getElementById("login-email").value.trim().toLowerCase();
       const phone = document.getElementById("login-phone").value.trim();
-      const profiles = JSON.parse(localStorage.getItem(PROFILES_KEY) || "{}");
 
-      const existingProfile = profiles[email];
-      if (!existingProfile) {
+      const { data: existingProfile, error } = await supabaseClient
+        .from('candidate_profiles')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+      btn.disabled = false;
+      btn.innerText = "Login to Candidate Dashboard";
+
+      if (error || !existingProfile) {
         alert("⚠️ No account found with this email. Please register your profile.");
         switchAuthTab('register');
         document.getElementById("auth-email").value = email;
@@ -712,51 +734,66 @@
       currentCandidate = existingProfile;
       closeAuthModal();
       updateHeaderAuthState();
+      await fetchMyApplications();
       renderPublicJobs(allJobs);
       openCandidateDashboard();
     }
 
-    function handleCandidateRegisterSubmit(e) {
+    async function handleCandidateRegisterSubmit(e) {
       e.preventDefault();
-      const email = document.getElementById("auth-email").value.trim().toLowerCase();
-      const profiles = JSON.parse(localStorage.getItem(PROFILES_KEY) || "{}");
+      const btn = document.getElementById("reg-submit-btn");
+      const fileInput = document.getElementById("auth-resume-file");
+      const file = fileInput.files[0];
 
-      if (profiles[email]) {
-        alert("ℹ️ An account with this email already exists. Signing you in directly.");
-        localStorage.setItem(ACTIVE_CAND_KEY, email);
-        currentCandidate = profiles[email];
-        closeAuthModal();
-        updateHeaderAuthState();
-        renderPublicJobs(allJobs);
-        openCandidateDashboard();
+      if (!file) {
+        alert("Please select a valid PDF or DOCX resume.");
         return;
       }
 
-      const profileData = {
-        candidateId: email,
-        name: document.getElementById("auth-name").value.trim(),
-        email: email,
-        phone: document.getElementById("auth-phone").value.trim(),
-        experience: document.getElementById("auth-exp").value,
-        preferredLocation: document.getElementById("auth-loc").value.trim() || "Any",
-        preferredRole: "Tech / Engineering",
-        skills: document.getElementById("auth-skills").value.split(",").map(s => s.trim()).filter(Boolean),
-        defaultResumeUrl: document.getElementById("auth-file-path").value || `/storage/v1/object/public/resumes/${Date.now()}_resume.pdf`
-      };
+      btn.disabled = true;
+      btn.innerText = "Uploading Resume & Creating Profile...";
 
-      profiles[email] = profileData;
-      localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
-      localStorage.setItem(ACTIVE_CAND_KEY, email);
+      try {
+        const email = document.getElementById("auth-email").value.trim().toLowerCase();
+        const resumePublicUrl = await uploadResumeToBucket(file, email);
 
-      currentCandidate = profileData;
-      closeAuthModal();
-      updateHeaderAuthState();
-      renderPublicJobs(allJobs);
-      openCandidateDashboard();
+        const profilePayload = {
+          email: email,
+          name: document.getElementById("auth-name").value.trim(),
+          phone: document.getElementById("auth-phone").value.trim(),
+          experience: document.getElementById("auth-exp").value,
+          preferred_location: document.getElementById("auth-loc").value.trim() || "Any",
+          preferred_role: "Tech / Engineering",
+          skills: document.getElementById("auth-skills").value.split(",").map(s => s.trim()).filter(Boolean),
+          default_resume_url: resumePublicUrl
+        };
+
+        const { data, error } = await supabaseClient
+          .from('candidate_profiles')
+          .upsert(profilePayload)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        localStorage.setItem(ACTIVE_CAND_KEY, email);
+        currentCandidate = data;
+        closeAuthModal();
+        updateHeaderAuthState();
+        await fetchMyApplications();
+        renderPublicJobs(allJobs);
+        openCandidateDashboard();
+      } catch (err) {
+        alert("Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Register & Open Dashboard";
+      }
     }
 
     function handleCandidateLogout() {
       currentCandidate = null;
+      myApplications = [];
       localStorage.removeItem(ACTIVE_CAND_KEY);
       updateHeaderAuthState();
       switchMainView('view-browse', document.getElementById("nav-browse-btn"));
@@ -784,38 +821,37 @@
       document.getElementById("prof-email").value = currentCandidate.email;
       document.getElementById("prof-phone").value = currentCandidate.phone;
       document.getElementById("prof-exp").value = currentCandidate.experience;
-      document.getElementById("prof-role").value = currentCandidate.preferredRole || "";
-      document.getElementById("prof-loc").value = currentCandidate.preferredLocation || "";
-      document.getElementById("prof-skills").value = currentCandidate.skills.join(", ");
-      document.getElementById("prof-resume-url").value = currentCandidate.defaultResumeUrl;
+      document.getElementById("prof-role").value = currentCandidate.preferred_role || "";
+      document.getElementById("prof-loc").value = currentCandidate.preferred_location || "";
+      document.getElementById("prof-skills").value = (currentCandidate.skills || []).join(", ");
+      document.getElementById("prof-resume-url").value = currentCandidate.default_resume_url;
 
-      const allApps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
-      const myApps = allApps.filter(a => a.email.toLowerCase() === currentCandidate.email.toLowerCase());
-      document.getElementById("applied-count").innerText = myApps.length;
-
+      document.getElementById("applied-count").innerText = myApplications.length;
       const tbody = document.getElementById("applied-jobs-tbody");
-      if (myApps.length === 0) {
+
+      if (myApplications.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem; color:#64748b;">You haven't applied to any jobs yet.</td></tr>`;
       } else {
-        tbody.innerHTML = myApps.map(app => {
+        tbody.innerHTML = myApplications.map(app => {
           const statusClass = "status-" + (app.status || "Applied").replace(/\s+/g, '-');
           return `
             <tr>
-              <td><strong>${app.jobTitle}</strong></td>
+              <td><strong>${app.job_title}</strong></td>
               <td>${app.company}</td>
-              <td>${app.appliedDate}</td>
-              <td><span style="font-size:0.8rem; color:#185adb;">📄 ${app.resumeUrl.split('/').pop()}</span></td>
+              <td>${app.applied_date}</td>
+              <td><a href="${app.resume_url}" target="_blank" style="font-size:0.82rem; color:#185adb; font-weight:700; text-decoration:none;">📄 View Submitted CV ↗</a></td>
               <td><span class="status-pill ${statusClass}">${app.status || 'Applied'}</span></td>
             </tr>
           `;
         }).join("");
       }
 
-      const candSkillsLower = currentCandidate.skills.map(s => s.toLowerCase());
-      const prefLocLower = (currentCandidate.preferredLocation || "").toLowerCase();
+      const candSkillsLower = (currentCandidate.skills || []).map(s => s.toLowerCase());
+      const prefLocLower = (currentCandidate.preferred_location || "").toLowerCase();
 
       const scoredJobs = allJobs.map(job => {
-        const matchedSkills = job.skills.filter(s => candSkillsLower.includes(s.toLowerCase()));
+        const jSkills = job.skills || [];
+        const matchedSkills = jSkills.filter(s => candSkillsLower.includes(s.toLowerCase()));
         const locBonus = (prefLocLower && job.location.toLowerCase().includes(prefLocLower)) ? 1 : 0;
         const score = matchedSkills.length + locBonus;
         return { ...job, matchScore: score, matchedSkills };
@@ -828,7 +864,7 @@
         recContainer.innerHTML = `<div style="background:#fff; padding:2rem; border-radius:12px; text-align:center; color:#64748b;">Update your skills in 'My Profile' to get tailored job recommendations.</div>`;
       } else {
         recContainer.innerHTML = scoredJobs.map(j => {
-          const alreadyApplied = myApps.some(a => a.jobId === j.id);
+          const alreadyApplied = myApplications.some(a => a.job_id === j.id);
           return `
             <article class="job-card-box">
               <div class="card-head">
@@ -849,7 +885,7 @@
                 <div class="stat-pillar">📍 <strong>${j.location}</strong></div>
               </div>
               <div class="skills-cluster">
-                ${j.skills.map(s => `<span class="skill-chip" style="${candSkillsLower.includes(s.toLowerCase()) ? 'background:#dcfce7; border-color:#86efac; color:#166534;' : ''}">${s}</span>`).join('')}
+                ${(j.skills || []).map(s => `<span class="skill-chip" style="${candSkillsLower.includes(s.toLowerCase()) ? 'background:#dcfce7; border-color:#86efac; color:#166534;' : ''}">${s}</span>`).join('')}
               </div>
             </article>
           `;
@@ -857,47 +893,72 @@
       }
     }
 
-    function handleProfileResumeUpload(e) {
-      const path = validateFileInput(e, 'prof-resume-url');
-      if (path) {
-        document.getElementById("prof-resume-status").innerText = `✓ Uploaded & Sanitized: ${path.split('/').pop()}`;
+    function handleProfileResumeSelected(e) {
+      if (validateSelectedFile(e)) {
+        document.getElementById("prof-resume-status").innerText = `✓ Ready to upload: ${e.target.files[0].name}`;
       }
     }
 
-    function handleProfileUpdate(e) {
+    async function handleProfileUpdate(e) {
       e.preventDefault();
       if (!currentCandidate) return;
 
-      const profiles = JSON.parse(localStorage.getItem(PROFILES_KEY) || "{}");
-      currentCandidate.name = document.getElementById("prof-name").value.trim();
-      currentCandidate.phone = document.getElementById("prof-phone").value.trim();
-      currentCandidate.experience = document.getElementById("prof-exp").value;
-      currentCandidate.preferredRole = document.getElementById("prof-role").value.trim();
-      currentCandidate.preferredLocation = document.getElementById("prof-loc").value.trim();
-      currentCandidate.skills = document.getElementById("prof-skills").value.split(",").map(s => s.trim()).filter(Boolean);
-      currentCandidate.defaultResumeUrl = document.getElementById("prof-resume-url").value;
+      const btn = document.getElementById("prof-save-btn");
+      btn.disabled = true;
+      btn.innerText = "Saving to Cloud...";
 
-      profiles[currentCandidate.email] = currentCandidate;
-      localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+      try {
+        let resumeUrl = currentCandidate.default_resume_url;
+        const newFile = document.getElementById("prof-file-input").files[0];
+        if (newFile) {
+          resumeUrl = await uploadResumeToBucket(newFile, currentCandidate.email);
+        }
 
-      updateHeaderAuthState();
-      populateCandidateDashboard();
-      alert("✅ Profile updated! Your job recommendations have been refreshed.");
+        const updatedPayload = {
+          email: currentCandidate.email,
+          name: document.getElementById("prof-name").value.trim(),
+          phone: document.getElementById("prof-phone").value.trim(),
+          experience: document.getElementById("prof-exp").value,
+          preferred_role: document.getElementById("prof-role").value.trim(),
+          preferred_location: document.getElementById("prof-loc").value.trim(),
+          skills: document.getElementById("prof-skills").value.split(",").map(s => s.trim()).filter(Boolean),
+          default_resume_url: resumeUrl,
+          updated_at: new Date().toISOString()
+        };
+
+        const { data, error } = await supabaseClient
+          .from('candidate_profiles')
+          .upsert(updatedPayload)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        currentCandidate = data;
+        document.getElementById("prof-resume-status").innerText = "";
+        updateHeaderAuthState();
+        populateCandidateDashboard();
+        alert("✅ Profile and default resume updated in Supabase!");
+      } catch (err) {
+        alert("Update failed: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Save Profile Changes";
+      }
     }
 
     /* PUBLIC JOB FEED & APPLICATION SUBMISSION */
     function renderPublicJobs(jobs) {
       const container = document.getElementById("jobs-container");
       document.getElementById("feed-count").innerText = jobs.length;
-      const allApps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
 
       if (jobs.length === 0) {
-        container.innerHTML = `<div style="background:#fff; padding:3rem; text-align:center; border-radius:14px;">No active openings match your filters.</div>`;
+        container.innerHTML = `<div style="background:#fff; padding:3rem; text-align:center; border-radius:14px;">No active openings found. Employers can post new roles from the Employer Hub.</div>`;
         return;
       }
 
       container.innerHTML = jobs.map(j => {
-        const isApplied = currentCandidate && allApps.some(a => a.jobId === j.id && a.email.toLowerCase() === currentCandidate.email.toLowerCase());
+        const isApplied = currentCandidate && myApplications.some(a => a.job_id === j.id);
         return `
           <article class="job-card-box">
             <div class="card-head">
@@ -905,7 +966,7 @@
                 <h3 class="job-title-text">${j.title}</h3>
                 <div class="company-title-wrap">
                   <span>${j.company}</span>
-                  <span class="badge-mode">${j.workMode || 'Hybrid'}</span>
+                  <span class="badge-mode">${j.work_mode || 'Hybrid'}</span>
                 </div>
               </div>
               ${isApplied 
@@ -919,7 +980,7 @@
             </div>
             <p class="job-description-box">${j.snippet}</p>
             <div class="skills-cluster">
-              ${j.skills.map(s => `<span class="skill-chip">${s}</span>`).join('')}
+              ${(j.skills || []).map(s => `<span class="skill-chip">${s}</span>`).join('')}
             </div>
             <div class="card-footer">
               <span>Category: <strong>${j.category}</strong></span>
@@ -938,10 +999,11 @@
       const checkedDepts = Array.from(document.querySelectorAll(".cb-dept:checked")).map(el => el.value);
 
       const filtered = allJobs.filter(j => {
-        const matchKw = !kw || j.title.toLowerCase().includes(kw) || j.company.toLowerCase().includes(kw) || j.skills.some(s => s.toLowerCase().includes(kw));
+        const jSkills = j.skills || [];
+        const matchKw = !kw || j.title.toLowerCase().includes(kw) || j.company.toLowerCase().includes(kw) || jSkills.some(s => s.toLowerCase().includes(kw));
         const matchLoc = !loc || j.location.toLowerCase().includes(loc);
         const matchExp = !exp || j.experience.includes(exp);
-        const matchMode = checkedModes.length === 0 || checkedModes.includes(j.workMode);
+        const matchMode = checkedModes.length === 0 || checkedModes.includes(j.work_mode);
         const matchDept = checkedDepts.length === 0 || checkedDepts.includes(j.category);
         return matchKw && matchLoc && matchExp && matchMode && matchDept;
       });
@@ -952,7 +1014,7 @@
       document.querySelectorAll(".tmj-pill").forEach(p => p.classList.remove("active"));
       if (el) el.classList.add("active");
       if (cat === 'All') { renderPublicJobs(allJobs); return; }
-      renderPublicJobs(allJobs.filter(j => j.category.includes(cat) || (j.workMode && j.workMode.includes(cat))));
+      renderPublicJobs(allJobs.filter(j => (j.category && j.category.includes(cat)) || (j.work_mode && j.work_mode.includes(cat))));
     }
 
     function resetAllFilters() {
@@ -968,7 +1030,7 @@
       if (!job) return;
 
       if (currentCandidate) {
-        submitApplicationRecord(job, currentCandidate);
+        submitApplicationToSupabase(job, currentCandidate);
       } else {
         document.getElementById("guest-job-id").value = job.id;
         document.getElementById("modal-job-title").innerText = `Apply: ${job.title}`;
@@ -979,55 +1041,79 @@
 
     function closeGuestModal() { document.getElementById("guest-apply-modal").classList.remove("active"); }
 
-    function handleGuestApplySubmit(e) {
+    async function handleGuestApplySubmit(e) {
       e.preventDefault();
-      const jobId = document.getElementById("guest-job-id").value;
-      const job = allJobs.find(j => j.id === jobId);
+      const btn = document.getElementById("guest-apply-btn");
+      const file = document.getElementById("g-resume-file").files[0];
 
-      const guestApplicant = {
-        name: document.getElementById("g-name").value.trim(),
-        email: document.getElementById("g-email").value.trim().toLowerCase(),
-        phone: document.getElementById("g-phone").value.trim(),
-        experience: document.getElementById("g-exp").value.trim(),
-        skills: document.getElementById("g-skills").value.split(",").map(s => s.trim()).filter(Boolean),
-        defaultResumeUrl: document.getElementById("g-file-path").value || `/storage/v1/object/public/resumes/${Date.now()}_guest_cv.pdf`
-      };
-
-      submitApplicationRecord(job, guestApplicant);
-      closeGuestModal();
-    }
-
-    function submitApplicationRecord(job, applicant) {
-      const apps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
-      
-      if (apps.some(a => a.jobId === job.id && a.email.toLowerCase() === applicant.email.toLowerCase())) {
-        alert("You have already applied to this opening.");
+      if (!file) {
+        alert("Please upload a valid PDF or DOCX resume.");
         return;
       }
 
-      const newApp = {
+      btn.disabled = true;
+      btn.innerText = "Uploading Resume & Submitting...";
+
+      try {
+        const jobId = document.getElementById("guest-job-id").value;
+        const job = allJobs.find(j => j.id === jobId);
+        const email = document.getElementById("g-email").value.trim().toLowerCase();
+
+        const resumePublicUrl = await uploadResumeToBucket(file, email);
+
+        const guestApplicant = {
+          name: document.getElementById("g-name").value.trim(),
+          email: email,
+          phone: document.getElementById("g-phone").value.trim(),
+          experience: document.getElementById("g-exp").value.trim(),
+          skills: document.getElementById("g-skills").value.split(",").map(s => s.trim()).filter(Boolean),
+          default_resume_url: resumePublicUrl
+        };
+
+        await submitApplicationToSupabase(job, guestApplicant);
+        closeGuestModal();
+        e.target.reset();
+      } catch (err) {
+        alert("Submission Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Submit Application";
+      }
+    }
+
+    async function submitApplicationToSupabase(job, applicant) {
+      const appPayload = {
         id: "APP-" + Date.now(),
-        jobId: job.id,
-        employerId: job.employerId || "admin@toomanyjobs.com",
-        jobTitle: job.title,
+        job_id: job.id,
+        employer_id: job.employer_id,
+        job_title: job.title,
         company: job.company,
-        applicantName: applicant.name,
+        applicant_name: applicant.name,
         email: applicant.email,
         phone: applicant.phone,
         exp: applicant.experience,
-        candidateSkills: applicant.skills || [],
-        resumeUrl: applicant.defaultResumeUrl,
+        candidate_skills: applicant.skills || [],
+        resume_url: applicant.default_resume_url,
         status: "Applied",
-        appliedDate: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
+        applied_date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })
       };
 
-      apps.unshift(newApp);
-      localStorage.setItem(APPS_KEY, JSON.stringify(apps));
+      const { error } = await supabaseClient
+        .from('applications')
+        .insert(appPayload);
 
+      if (error) {
+        alert("Could not submit application: " + error.message);
+        return;
+      }
+
+      if (currentCandidate) {
+        await fetchMyApplications();
+        populateCandidateDashboard();
+      }
       renderPublicJobs(allJobs);
-      if (currentCandidate) populateCandidateDashboard();
 
-      document.getElementById("confirm-msg-text").innerText = `Your application and resume for "${job.title}" at ${job.company} have been submitted. You can track live status updates in your Dashboard.`;
+      document.getElementById("confirm-msg-text").innerText = `Your application and resume for "${job.title}" at ${job.company} have been securely uploaded to Supabase.`;
       document.getElementById("confirm-modal").classList.add("active");
     }
   </script>
