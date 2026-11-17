@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Supabase JS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --brand-navy: #0a2540;
@@ -60,6 +62,7 @@
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.7rem 0.9rem; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.92rem; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .btn-submit-job { width: 100%; padding: 0.85rem; background: var(--brand-orange); color: #fff; border: none; border-radius: var(--radius-pill); font-weight: 700; font-size: 1rem; cursor: pointer; }
+    .btn-submit-job:disabled { background: #94a3b8; cursor: not-allowed; }
 
     .table-card { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-card); overflow-x: auto; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
     .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
@@ -97,7 +100,7 @@
 
   <section class="emp-hero">
     <h1>Employer & Recruiter Hiring Workspace</h1>
-    <p>Manage company branding, post active roles, and evaluate top-matched candidate resumes.</p>
+    <p>Manage company branding, post active roles, and download submitted candidate resumes directly from cloud storage.</p>
   </section>
 
   <div class="membership-tier-bar">
@@ -115,7 +118,7 @@
     <div class="tabs-row">
       <button class="tab-btn active" onclick="switchTab('tab-post', this)">📢 Post a Job</button>
       <button class="tab-btn" onclick="switchTab('tab-openings', this)">📋 My Active Openings (<span id="jobs-count">0</span>)</button>
-      <button class="tab-btn" onclick="switchTab('tab-resumes', this)">📬 Applicants & Status (<span id="apps-count">0</span>)</button>
+      <button class="tab-btn" onclick="switchTab('tab-resumes', this)">📬 Applicants & Resumes (<span id="apps-count">0</span>)</button>
       <button class="tab-btn" onclick="switchTab('tab-best-matches', this)">✨ Best Candidates (<span id="matches-count">0</span>)</button>
       <button class="tab-btn" onclick="switchTab('tab-company-profile', this)">🏢 Company Profile</button>
     </div>
@@ -124,7 +127,7 @@
     <div class="tab-panel active" id="tab-post">
       <div class="form-card">
         <h2 style="font-size:1.35rem; color:var(--brand-navy); margin-bottom:0.25rem;">Create New Job Listing</h2>
-        <p style="color:#64748b; font-size:0.88rem; margin-bottom:1.5rem;">Published roles appear live on the candidate search feed immediately.</p>
+        <p style="color:#64748b; font-size:0.88rem; margin-bottom:1.5rem;">Published roles sync immediately to the live candidate feed.</p>
 
         <form onsubmit="handleJobCreate(event)">
           <div class="form-group">
@@ -182,12 +185,12 @@
             <label>Full Job Description *</label>
             <textarea id="job-desc" rows="4" required placeholder="Describe responsibilities, shift details, qualifications..."></textarea>
           </div>
-          <button type="submit" class="btn-submit-job">Publish Job to Live Feed</button>
+          <button type="submit" id="post-job-btn" class="btn-submit-job">Publish Job to Live Feed</button>
         </form>
       </div>
     </div>
 
-    <!-- TAB 2: MY OPENINGS (OWNERSHIP FILTERED) -->
+    <!-- TAB 2: MY OPENINGS -->
     <div class="tab-panel" id="tab-openings">
       <div class="table-card">
         <table class="data-table">
@@ -214,7 +217,7 @@
               <th>Applicant Contact</th>
               <th>Applied Role</th>
               <th>Experience</th>
-              <th>Resume</th>
+              <th>Cloud Resume File</th>
               <th>Update Status (Live Sync)</th>
             </tr>
           </thead>
@@ -266,7 +269,7 @@
             <label>Company Overview / Description</label>
             <textarea id="comp-prof-desc" rows="4" placeholder="Brief description of your company culture, tech stack, and mission..."></textarea>
           </div>
-          <button type="submit" class="btn-submit-job">Save Company Profile</button>
+          <button type="submit" id="save-comp-btn" class="btn-submit-job">Save Company Profile</button>
         </form>
       </div>
     </div>
@@ -307,7 +310,7 @@
         <p style="font-size:0.9rem; color:#64748b; margin-bottom:1.5rem;">
           We sent a verification link to <strong id="sent-email-target"></strong>. Click below to activate your account.
         </p>
-        <button onclick="simulateMailActivation()" style="background:#16a34a; color:#fff; border:none; padding:0.75rem 1.5rem; border-radius:999px; font-weight:700; cursor:pointer; font-size:1rem; width:100%;">
+        <button onclick="simulateMailActivation()" id="activate-btn" style="background:#16a34a; color:#fff; border:none; padding:0.75rem 1.5rem; border-radius:999px; font-weight:700; cursor:pointer; font-size:1rem; width:100%;">
           ✓ Click to Activate Mail & Join Free Package
         </button>
       </div>
@@ -315,23 +318,31 @@
   </div>
 
   <script>
-    const JOBS_KEY = 'TMJ_JOBS_STORE_V6';
-    const APPS_KEY = 'TMJ_APPS_STORE_V6';
-    const EMP_PROFILES_KEY = 'TMJ_EMP_PROFILES_V6';
-    const ACTIVE_EMP_KEY = 'TMJ_ACTIVE_EMP_EMAIL_V6';
+    // =========================================================================
+    // 1. SUPABASE CONFIGURATION (INSERT YOUR PROJECT URL & ANON KEY HERE)
+    // =========================================================================
+    const SUPABASE_URL = 'YOUR_PROJECT_URL_HERE';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    const ACTIVE_EMP_KEY = 'TMJ_ACTIVE_EMP_EMAIL_SB';
     let currentEmployer = null;
 
-    document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
       const activeEmail = localStorage.getItem(ACTIVE_EMP_KEY);
       if (activeEmail) {
-        const profiles = JSON.parse(localStorage.getItem(EMP_PROFILES_KEY) || "{}");
-        if (profiles[activeEmail]) {
-          currentEmployer = profiles[activeEmail];
+        const { data, error } = await supabaseClient
+          .from('employer_profiles')
+          .select('*')
+          .eq('email', activeEmail)
+          .single();
+
+        if (data && !error) {
+          currentEmployer = data;
           updateEmployerAuthUI();
         }
       }
-      refreshEmployerWorkspace();
+      await refreshEmployerWorkspace();
     });
 
     function switchTab(panelId, btn) {
@@ -346,31 +357,42 @@
       btn.classList.add("active");
     }
 
-    function refreshEmployerWorkspace() {
-      const allJobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
-      const allApps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
+    async function refreshEmployerWorkspace() {
+      if (!currentEmployer) {
+        document.getElementById("jobs-count").innerText = "0";
+        document.getElementById("apps-count").innerText = "0";
+        document.getElementById("matches-count").innerText = "0";
+        return;
+      }
 
-      // Strict RBAC Ownership Isolation: Filter only jobs & applications owned by currentEmployer
-      const myJobs = currentEmployer 
-        ? allJobs.filter(j => (j.employerId || "").toLowerCase() === currentEmployer.email.toLowerCase()) 
-        : [];
-      const myJobIds = myJobs.map(j => j.id);
-      const myApps = currentEmployer 
-        ? allApps.filter(a => myJobIds.includes(a.jobId) || (a.employerId || "").toLowerCase() === currentEmployer.email.toLowerCase()) 
-        : [];
+      // 1. Fetch jobs strictly owned by currentEmployer
+      const { data: myJobs, error: jobsErr } = await supabaseClient
+        .from('jobs')
+        .select('*')
+        .eq('employer_id', currentEmployer.email)
+        .order('created_at', { ascending: false });
 
-      document.getElementById("jobs-count").innerText = myJobs.length;
-      document.getElementById("apps-count").innerText = myApps.length;
+      const safeJobs = myJobs || [];
+      document.getElementById("jobs-count").innerText = safeJobs.length;
 
-      // 1. Render My Openings Table
+      // 2. Fetch applications strictly for jobs owned by currentEmployer
+      const { data: myApps, error: appsErr } = await supabaseClient
+        .from('applications')
+        .select('*')
+        .eq('employer_id', currentEmployer.email);
+
+      const safeApps = myApps || [];
+      document.getElementById("apps-count").innerText = safeApps.length;
+
+      // Render Openings Table
       const oBody = document.getElementById("openings-tbody");
-      if (myJobs.length === 0) {
+      if (safeJobs.length === 0) {
         oBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem; color:#64748b;">No jobs posted under your account yet.</td></tr>`;
       } else {
-        oBody.innerHTML = myJobs.map(j => `
+        oBody.innerHTML = safeJobs.map(j => `
           <tr>
             <td><strong>${j.title}</strong><br><small style="color:#64748b;">${j.company}</small></td>
-            <td>${j.location}<br><small style="color:#185adb;">${j.workMode || 'Hybrid'}</small></td>
+            <td>${j.location}<br><small style="color:#185adb;">${j.work_mode || 'Hybrid'}</small></td>
             <td>${j.experience}</td>
             <td style="font-weight:700; color:#15803d;">${j.salary}</td>
             <td><button class="btn-del" onclick="deleteJob('${j.id}')">Delete</button></td>
@@ -378,19 +400,19 @@
         `).join("");
       }
 
-      // 2. Render Applicants & Live Status Dropdown
+      // Render Applicants & Real Supabase Storage Resume Links
       const aBody = document.getElementById("apps-tbody");
-      if (myApps.length === 0) {
+      if (safeApps.length === 0) {
         aBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; padding:2rem;">No applications received for your posted jobs yet.</td></tr>`;
       } else {
-        aBody.innerHTML = myApps.map(a => `
+        aBody.innerHTML = safeApps.map(a => `
           <tr>
-            <td><strong>${a.applicantName}</strong><br><small>${a.email} • ${a.phone}</small></td>
-            <td><strong>${a.jobTitle}</strong></td>
+            <td><strong>${a.applicant_name}</strong><br><small>${a.email} • ${a.phone}</small></td>
+            <td><strong>${a.job_title}</strong></td>
             <td>${a.exp}</td>
             <td>
-              <a href="${a.resumeUrl}" target="_blank" download style="color:#185adb; font-weight:700; background:#eff6ff; padding:0.3rem 0.6rem; border-radius:6px; text-decoration:none; display:inline-block;">
-                📥 View / Download CV
+              <a href="${a.resume_url}" target="_blank" rel="noopener noreferrer" style="color:#185adb; font-weight:700; background:#eff6ff; padding:0.35rem 0.7rem; border-radius:6px; text-decoration:none; display:inline-block;">
+                📥 View / Download CV ↗
               </a>
             </td>
             <td>
@@ -405,12 +427,12 @@
         `).join("");
       }
 
-      // 3. Render Best Candidate Matches
+      // Render Best Candidate Matches
       const allRequiredSkills = new Set();
-      myJobs.forEach(j => j.skills.forEach(s => allRequiredSkills.add(s.toLowerCase())));
+      safeJobs.forEach(j => (j.skills || []).forEach(s => allRequiredSkills.add(s.toLowerCase())));
 
-      const matchedCandidates = myApps.map(app => {
-        const cSkills = app.candidateSkills || [];
+      const matchedCandidates = safeApps.map(app => {
+        const cSkills = app.candidate_skills || [];
         const overlaps = cSkills.filter(s => allRequiredSkills.has(s.toLowerCase()));
         return { ...app, matchCount: overlaps.length, overlaps };
       }).filter(c => c.matchCount > 0).sort((a, b) => b.matchCount - a.matchCount);
@@ -425,54 +447,45 @@
           <div class="match-card">
             <div>
               <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.25rem;">
-                <strong style="font-size:1.05rem; color:var(--brand-navy);">${c.applicantName}</strong>
+                <strong style="font-size:1.05rem; color:var(--brand-navy);">${c.applicant_name}</strong>
                 <span style="background:#dcfce7; color:#15803d; font-size:0.75rem; font-weight:800; padding:0.15rem 0.6rem; border-radius:999px;">✨ ${c.matchCount} Matched Skill${c.matchCount > 1 ? 's' : ''}</span>
               </div>
-              <div style="font-size:0.85rem; color:#475569; margin-bottom:0.4rem;">Applied for: <strong>${c.jobTitle}</strong> • Exp: ${c.exp} • ${c.email}</div>
+              <div style="font-size:0.85rem; color:#475569; margin-bottom:0.4rem;">Applied for: <strong>${c.job_title}</strong> • Exp: ${c.exp} • ${c.email}</div>
               <div>
-                ${(c.candidateSkills || []).map(s => `<span class="skill-pill" style="${allRequiredSkills.has(s.toLowerCase()) ? 'background:#dcfce7; color:#166534;' : ''}">${s}</span>`).join('')}
+                ${(c.candidate_skills || []).map(s => `<span class="skill-pill" style="${allRequiredSkills.has(s.toLowerCase()) ? 'background:#dcfce7; color:#166534;' : ''}">${s}</span>`).join('')}
               </div>
             </div>
             <div>
-              <a href="${c.resumeUrl}" target="_blank" download style="background:var(--brand-blue); color:#fff; padding:0.5rem 1.2rem; border-radius:999px; font-weight:700; font-size:0.85rem; text-decoration:none;">Download CV ↗</a>
+              <a href="${c.resume_url}" target="_blank" rel="noopener noreferrer" style="background:var(--brand-blue); color:#fff; padding:0.5rem 1.2rem; border-radius:999px; font-weight:700; font-size:0.85rem; text-decoration:none;">Download CV ↗</a>
             </div>
           </div>
         `).join("");
       }
 
-      // 4. Populate Company Profile Form
-      if (currentEmployer) {
-        document.getElementById("comp-prof-name").value = currentEmployer.companyName || "";
-        document.getElementById("comp-prof-email").value = currentEmployer.email || "";
-        document.getElementById("comp-prof-industry").value = currentEmployer.industry || "";
-        document.getElementById("comp-prof-website").value = currentEmployer.website || "";
-        document.getElementById("comp-prof-location").value = currentEmployer.location || "";
-        document.getElementById("comp-prof-desc").value = currentEmployer.description || "";
-      }
+      // Populate Company Profile Form
+      document.getElementById("comp-prof-name").value = currentEmployer.company_name || "";
+      document.getElementById("comp-prof-email").value = currentEmployer.email || "";
+      document.getElementById("comp-prof-industry").value = currentEmployer.industry || "";
+      document.getElementById("comp-prof-website").value = currentEmployer.website || "";
+      document.getElementById("comp-prof-location").value = currentEmployer.location || "";
+      document.getElementById("comp-prof-desc").value = currentEmployer.description || "";
     }
 
-    /* OWNERSHIP-VERIFIED STATUS UPDATE */
-    function updateApplicantStatus(appId, newStatus) {
+    /* OWNERSHIP-VERIFIED STATUS UPDATE IN SUPABASE */
+    async function updateApplicantStatus(appId, newStatus) {
       if (!currentEmployer) return;
-      const allApps = JSON.parse(localStorage.getItem(APPS_KEY) || "[]");
-      const allJobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
 
-      const appIndex = allApps.findIndex(a => a.id === appId);
-      if (appIndex === -1) return;
+      const { error } = await supabaseClient
+        .from('applications')
+        .update({ status: newStatus })
+        .eq('id', appId)
+        .eq('employer_id', currentEmployer.email); // Strict RBAC filter
 
-      const targetApp = allApps[appIndex];
-      const owningJob = allJobs.find(j => j.id === targetApp.jobId);
-
-      // Guardrail: Verify employer owns the job before allowing status modification
-      if (owningJob && owningJob.employerId.toLowerCase() !== currentEmployer.email.toLowerCase()) {
-        alert("❌ Security Violation: You can only update statuses for jobs posted by your account.");
-        return;
+      if (error) {
+        alert("Failed to update status: " + error.message);
+      } else {
+        await refreshEmployerWorkspace();
       }
-
-      allApps[appIndex].status = newStatus;
-      allApps[appIndex].updatedAt = new Date().toISOString();
-      localStorage.setItem(APPS_KEY, JSON.stringify(allApps));
-      refreshEmployerWorkspace();
     }
 
     /* EMPLOYER AUTH & MAIL ACTIVATION */
@@ -487,12 +500,10 @@
     function handleEmployerRegisterSubmit(e) {
       e.preventDefault();
       const email = document.getElementById("emp-reg-email").value.trim().toLowerCase();
-      const profiles = JSON.parse(localStorage.getItem(EMP_PROFILES_KEY) || "{}");
 
-      tempEmpData = profiles[email] || {
-        employerId: email,
-        companyName: document.getElementById("emp-reg-comp").value.trim(),
+      tempEmpData = {
         email: email,
+        company_name: document.getElementById("emp-reg-comp").value.trim(),
         phone: document.getElementById("emp-reg-phone").value.trim(),
         industry: "Technology & Services",
         website: "",
@@ -505,16 +516,30 @@
       document.getElementById("auth-step-2").style.display = "block";
     }
 
-    function simulateMailActivation() {
-      const profiles = JSON.parse(localStorage.getItem(EMP_PROFILES_KEY) || "{}");
-      profiles[tempEmpData.email] = tempEmpData;
-      localStorage.setItem(EMP_PROFILES_KEY, JSON.stringify(profiles));
-      localStorage.setItem(ACTIVE_EMP_KEY, tempEmpData.email);
+    async function simulateMailActivation() {
+      const btn = document.getElementById("activate-btn");
+      btn.disabled = true;
+      btn.innerText = "Activating in Cloud...";
 
-      currentEmployer = tempEmpData;
+      const { data, error } = await supabaseClient
+        .from('employer_profiles')
+        .upsert(tempEmpData, { onConflict: 'email' })
+        .select()
+        .single();
+
+      btn.disabled = false;
+      btn.innerText = "✓ Click to Activate Mail & Join Free Package";
+
+      if (error) {
+        alert("Activation error: " + error.message);
+        return;
+      }
+
+      localStorage.setItem(ACTIVE_EMP_KEY, data.email);
+      currentEmployer = data;
       closeEmployerAuthModal();
       updateEmployerAuthUI();
-      refreshEmployerWorkspace();
+      await refreshEmployerWorkspace();
       alert("🎉 Email Activated! Welcome to your Employer Workspace.");
     }
 
@@ -530,10 +555,10 @@
       const btn = document.getElementById("header-auth-action");
 
       if (currentEmployer) {
-        indicator.innerHTML = `<span style="color:#15803d; font-weight:700;">✓ Verified Account (${currentEmployer.companyName})</span>`;
-        btn.innerText = "Sign Out (" + currentEmployer.companyName.split(' ')[0] + ")";
+        indicator.innerHTML = `<span style="color:#15803d; font-weight:700;">✓ Verified Account (${currentEmployer.company_name})</span>`;
+        btn.innerText = "Sign Out (" + currentEmployer.company_name.split(' ')[0] + ")";
         btn.onclick = handleEmployerLogout;
-        document.getElementById("job-company").value = currentEmployer.companyName;
+        document.getElementById("job-company").value = currentEmployer.company_name;
       } else {
         indicator.innerHTML = `<span style="color:#b45309; font-weight:700;">⚠️ Registration & Mail Activation Required</span>`;
         btn.innerText = "Employer Login / Register";
@@ -541,25 +566,45 @@
       }
     }
 
-    function handleCompanyProfileSave(e) {
+    async function handleCompanyProfileSave(e) {
       e.preventDefault();
       if (!currentEmployer) return;
 
-      const profiles = JSON.parse(localStorage.getItem(EMP_PROFILES_KEY) || "{}");
-      currentEmployer.companyName = document.getElementById("comp-prof-name").value.trim();
-      currentEmployer.industry = document.getElementById("comp-prof-industry").value.trim();
-      currentEmployer.website = document.getElementById("comp-prof-website").value.trim();
-      currentEmployer.location = document.getElementById("comp-prof-location").value.trim();
-      currentEmployer.description = document.getElementById("comp-prof-desc").value.trim();
+      const btn = document.getElementById("save-comp-btn");
+      btn.disabled = true;
+      btn.innerText = "Saving...";
 
-      profiles[currentEmployer.email] = currentEmployer;
-      localStorage.setItem(EMP_PROFILES_KEY, JSON.stringify(profiles));
+      const updatedPayload = {
+        email: currentEmployer.email,
+        company_name: document.getElementById("comp-prof-name").value.trim(),
+        phone: currentEmployer.phone,
+        industry: document.getElementById("comp-prof-industry").value.trim(),
+        website: document.getElementById("comp-prof-website").value.trim(),
+        location: document.getElementById("comp-prof-location").value.trim(),
+        description: document.getElementById("comp-prof-desc").value.trim()
+      };
+
+      const { data, error } = await supabaseClient
+        .from('employer_profiles')
+        .upsert(updatedPayload)
+        .select()
+        .single();
+
+      btn.disabled = false;
+      btn.innerText = "Save Company Profile";
+
+      if (error) {
+        alert("Failed to save profile: " + error.message);
+        return;
+      }
+
+      currentEmployer = data;
       updateEmployerAuthUI();
-      alert("✅ Company profile saved!");
+      alert("✅ Company profile saved to Supabase!");
     }
 
     /* JOB POSTING & OWNERSHIP DELETION */
-    function handleJobCreate(e) {
+    async function handleJobCreate(e) {
       e.preventDefault();
       if (!currentEmployer) {
         alert("⚠️ Access Restricted: Please register and activate your employer email first.");
@@ -567,45 +612,59 @@
         return;
       }
 
+      const btn = document.getElementById("post-job-btn");
+      btn.disabled = true;
+      btn.innerText = "Publishing...";
+
       const newJob = {
         id: "tmj-" + Date.now(),
-        employerId: currentEmployer.email,
+        employer_id: currentEmployer.email,
         title: document.getElementById("job-title").value.trim(),
-        company: document.getElementById("job-company").value.trim() || currentEmployer.companyName,
+        company: document.getElementById("job-company").value.trim() || currentEmployer.company_name,
         location: document.getElementById("job-location").value.trim(),
         experience: document.getElementById("job-exp").value,
         salary: document.getElementById("job-ctc").value.trim(),
         category: document.getElementById("job-dept").value,
-        workMode: document.getElementById("job-mode").value,
+        work_mode: document.getElementById("job-mode").value,
         skills: document.getElementById("job-skills").value.split(",").map(s => s.trim()).filter(Boolean),
         snippet: document.getElementById("job-desc").value.trim()
       };
 
-      const jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
-      jobs.unshift(newJob);
-      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
+      const { error } = await supabaseClient
+        .from('jobs')
+        .insert(newJob);
 
-      alert("🎉 Opening published live to TooManyJobs.com!");
-      e.target.reset();
-      document.getElementById("job-company").value = currentEmployer.companyName;
-      refreshEmployerWorkspace();
-      switchTab('tab-openings', document.querySelectorAll(".tab-btn")[1]);
-    }
+      btn.disabled = false;
+      btn.innerText = "Publish Job to Live Feed";
 
-    function deleteJob(id) {
-      if (!currentEmployer) return;
-      let jobs = JSON.parse(localStorage.getItem(JOBS_KEY) || "[]");
-      const target = jobs.find(j => j.id === id);
-
-      if (target && target.employerId.toLowerCase() !== currentEmployer.email.toLowerCase()) {
-        alert("❌ Security Violation: You can only delete your own job postings.");
+      if (error) {
+        alert("Error publishing job: " + error.message);
         return;
       }
 
+      alert("🎉 Opening published live to TooManyJobs.com!");
+      e.target.reset();
+      document.getElementById("job-company").value = currentEmployer.company_name;
+      await refreshEmployerWorkspace();
+      switchTab('tab-openings', document.querySelectorAll(".tab-btn")[1]);
+    }
+
+    async function deleteJob(id) {
+      if (!currentEmployer) return;
       if (!confirm("Remove this opening from the live feed?")) return;
-      jobs = jobs.filter(j => j.id !== id);
-      localStorage.setItem(JOBS_KEY, JSON.stringify(jobs));
-      refreshEmployerWorkspace();
+
+      const { error } = await supabaseClient
+        .from('jobs')
+        .delete()
+        .eq('id', id)
+        .eq('employer_id', currentEmployer.email); // Strict RBAC check
+
+      if (error) {
+        alert("Error deleting job: " + error.message);
+        return;
+      }
+
+      await refreshEmployerWorkspace();
     }
   </script>
 </body>
